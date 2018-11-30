@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>{% load staticfiles %}
+    <title>{% block title %}{% endblock %}</title>
+    <meta http-equiv="content-type" content="application/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <!-- CSS Global Compulsory -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css" type="text/css" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/bootstrap/bootstrap.css'%}" type="text/css">
+    <!-- CSS Global Icons -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/icon-awesome/css/font-awesome.min.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/icon-line/css/simple-line-icons.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/icon-etlinefont/style.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/icon-line-pro/style.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/icon-hs/style.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/dzsparallaxer/dzsparallaxer.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/dzsparallaxer/dzsscroller/scroller.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/dzsparallaxer/advancedscroller/plugin.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/animate.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/cubeportfolio-full/cubeportfolio/css/cubeportfolio.min.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/fancybox/jquery.fancybox.min.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/slick-carousel/slick/slick.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/typedjs/typed.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/hs-megamenu/src/hs.megamenu.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/hamburgers/hamburgers.min.css'%}">
+
+    <!-- CSS Unify -->
+    <link rel="stylesheet" href="{% static 'assets/css/unify-core.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/css/unify-components.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/css/unify-globals.css'%}">
+
+    <!-- CSS Customization -->
+    <link rel="stylesheet" href="{% static 'assets/css/custom.css'%}">
+
+    {{ form.media.css }}
+    <script src="https://yandex.st/json2/2011-01-18/json2.min.js"></script>
+    <!-- JS Global Compulsory -->
+    <script src="{% static 'assets/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/jquery-migrate/jquery-migrate.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/jquery-ui/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/popper.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/bootstrap/bootstrap.min.js' %}"></script>
+    <!-- JS Implementing Plugins -->
+    <script src="{% static 'assets/vendor/slick-carousel/slick/slick.js' %}"></script>
+    <script src="{% static 'assets/vendor/hs-megamenu/src/hs.megamenu.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/cubeportfolio-full/cubeportfolio/js/jquery.cubeportfolio.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/dzsparallaxer/dzsparallaxer.js' %}"></script>
+    <script src="{% static 'assets/vendor/dzsparallaxer/dzsscroller/scroller.js' %}"></script>
+    <script src="{% static 'assets/vendor/dzsparallaxer/advancedscroller/plugin.js' %}"></script>
+    <script src="{% static '/assets/vendor/fancybox/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/typedjs/typed.min.js' %}"></script>
+    <!-- JS Unify -->
+    <script src="{% static 'assets/js/hs.core.js' %}"></script>
+    <script src="{% static 'assets/js/components/hs.header.js' %}"></script>
+    <script src="{% static 'assets/js/helpers/hs.hamburgers.js' %}"></script>
+    <script src="{% static 'assets/js/components/hs.tabs.js' %}"></script>
+    <script src="{% static 'assets/js/components/hs.onscroll-animation.js' %}"></script>
+    <script src="{% static 'assets/js/components/hs.cubeportfolio.js' %}"></script>
+    <script src="{% static 'assets/js/components/hs.popup.js' %}"></script>
+    <script src="{% static 'assets/js/components/hs.counter.js' %}"></script>
+    <script src="{% static 'assets/js/components/hs.go-to.js' %}"></script>
+    <!-- JS Customization -->
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+    <script src="{% static 'csrf.js' %}"></script>
+    {{ form.media.js }}
+
+    <script>
+        $(document).on('ready', function () {
+            // initialization of tabs
+            $.HSCore.components.HSTabs.init('[role="tablist"]');
+
+            // initialization of scroll animation
+            $.HSCore.components.HSOnScrollAnimation.init('[data-animation]');
+
+            // initialization of popups
+            $.HSCore.components.HSPopup.init('.js-fancybox');
+
+            // initialization of go to
+            $.HSCore.components.HSGoTo.init('.js-go-to');
+
+            // initialization of counters
+            var counters = $.HSCore.components.HSCounter.init('[class*="js-counter"]');
+          });
+
+          $(window).on('load', function () {
+            // initialization of header
+            $.HSCore.components.HSHeader.init($('#js-header'));
+            $.HSCore.helpers.HSHamburgers.init('.hamburger');
+
+            // initialization of HSMegaMenu component
+            $('.js-mega-menu').HSMegaMenu({
+              event: 'hover',
+              pageContainer: $('.container'),
+              breakpoint: 991
+            });
+
+            // initialization of cubeportfolio
+            $.HSCore.components.HSCubeportfolio.init('.cbp');
+
+            // initialization of masonry
+            $('.masonry-grid').imagesLoaded().then(function(){
+              $('.masonry-grid').masonry({
+                columnWidth: '.masonry-grid-sizer',
+                itemSelector: '.masonry-grid-item',
+                percentPosition: true
+              });
+            });
+          });
+    </script>
+
+    {% block head %}{% endblock %}
+</head>
+<body class="g-overflow-x-hidden">
+    <!-- Header -->
+    <header id="js-header" class="u-header u-header--static" >
+      <div class="u-header__section u-header__section--light g-transition-0_3 g-py-10" style="background-color: #ede3d4;">
+        <nav class="js-mega-menu navbar navbar-expand-lg">
+          <div class="container">
+            <!-- Responsive Toggle Button -->
+            <button class="navbar-toggler navbar-toggler-right btn g-line-height-1 g-brd-none g-pa-0 g-pos-abs g-top-3 g-right-0" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navBar" data-toggle="collapse" data-target="#navBar">
+              <span class="hamburger hamburger--slider">
+            <span class="hamburger-box">
+              <span class="hamburger-inner"></span>
+              </span>
+              </span>
+            </button>
+            <!-- End Responsive Toggle Button -->
+
+            <!-- Logo -->
+            <!--<a href="#" class="navbar-brand">-->
+              <!--<img src="{% static 'images/logo/theBrandProject_logo.png'%}" alt="tbp Logo">-->
+            <!--</a>-->
+            <!-- End Logo -->
+
+            <!-- Navigation -->
+            <div class="collapse navbar-collapse align-items-center flex-sm-row g-pt-10 g-pt-5--lg" id="navBar">
+              <ul class="navbar-nav g-font-weight-600 ml-auto">
+                <li class="nav-item g-mx-20--lg">
+                  <a href="#" class="nav-link px-0"><h1 class="g-font-weight-700 g-font-size-32 g-font-size-40--md g-line-height-1_2 mb-0 u-heading-v1__title">PurpleSkills</h1> </a>
+                </li>
+              </ul>
+            </div>
+            <!-- End Navigation -->
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- End Header -->
+    {% block content %} {% endblock %}
+    <!-- Footer -->
+    <div id="contacts-section" class="g-bg-black-opacity-0_9 g-color-white-opacity-0_8 g-py-60">
+      <div class="container">
+        <div class="row">
+          <!-- Footer Content -->
+          <div class="col-lg-6 col-md-6 g-mb-40 g-mb-0--lg">
+            <div class="u-heading-v2-3--bottom g-brd-white-opacity-0_8 g-mb-20">
+              <h2 class="u-heading-v2__title h6 text-uppercase mb-0">About Us</h2>
+            </div>
+
+            <p class="col-5" style="padding-left:0">Purple skills is a platform which enables corporate houses to provide state of the art training for their employees.</p>
+          </div>
+          <!-- End Footer Content -->
+
+          <!-- Footer Content -->
+          <div class="col-lg-6 col-md-6">
+            <div class="u-heading-v2-3--bottom g-brd-white-opacity-0_8 g-mb-20">
+              <h2 class="u-heading-v2__title h6 text-uppercase mb-0">Reach Us</h2>
+            </div>
+
+          <!-- Email -->
+          <div class="d-flex g-mb-5">
+            <div class="g-mr-10">
+              <span class="u-icon-v3 u-icon-size--xs g-bg-white-opacity-0_1 g-color-white-opacity-0_6">
+                <i class="fa fa-envelope"></i>
+              </span>
+            </div>
+            <p class="mt-2">
+              <a class="g-color-white-opacity-0_8 g-color-white--hover" href="mailto:admin@purpleskills.in">admin@purpleskills.in</a>
+
+            </p>
+          </div>
+          <!-- End Email -->
+
+          <!-- Website -->
+          <div class="d-flex g-mb-5">
+            <div class="g-mr-10">
+              <span class="u-icon-v3 u-icon-size--xs g-bg-white-opacity-0_1 g-color-white-opacity-0_6">
+                <i class="fa fa-globe"></i>
+              </span>
+            </div>
+            <p class="mt-2">
+              <a class="g-color-white-opacity-0_8 g-color-white--hover" href="#!">www.purpleskills.in</a>
+            </p>
+          </div>
+          <!-- End Email and Website -->
+        </address>
+          </div>
+          <!-- End Footer Content -->
+        </div>
+      </div>
+    </div>
+    <!-- End Footer -->
+
+    <!-- Copyright Footer -->
+    <footer class="g-bg-gray-dark-v1 g-color-white-opacity-0_8 g-py-20">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 text-center text-md-left g-mb-10 g-mb-0--md">
+            <div class="d-lg-flex">
+              <small class="d-block g-font-size-default g-mr-10 g-mb-10 g-mb-0--md">2018 &copy; All Rights Reserved.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- End Copyright Footer -->
+    <a class="js-go-to u-go-to-v1" href="#!" data-type="fixed" data-position='{
+     "bottom": 15,
+     "right": 15
+   }' data-offset-top="400" data-compensation="#js-header" data-show-effect="zoomIn">
+      <i class="hs-icon hs-icon-arrow-top"></i>
+    </a>
+  </main>
+
+  <div class="u-outer-spaces-helper"></div>
+
+
+<div class="container-fluid">
+
+    <div class="content">
+        <div class="main-block">
+            <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+            <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="button" data-yashareQuickServices="facebook,twitter"></div>
+
+        </div>
+    </div>
+    {% if request.path == '/' %}
+    {% endif %}
+
+</div> <!-- /container -->
+</body>
+</html>
