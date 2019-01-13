@@ -21,7 +21,7 @@ class UdemyCourse(models.Model):
     is_paid = models = models.NullBooleanFIeld()
     is_private = models.NullBooleanFIeld()
     is_whitelisted = models.NullBooleanFIeld()
-    locale = models.CharField(max_length=100i)
+    locale = models.CharField(max_length=100)
     num_lectures = models.IntegerField()
     num_quizzes = models.IntegerField()
     num_reviews = models.IntegerField()
