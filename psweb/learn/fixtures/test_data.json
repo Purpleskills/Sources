@@ -1,0 +1,105 @@
+[
+    { "pk": 1, "model": "learn.CourseCategory", "fields": {"name": "Business","status": 1}  },
+    { "pk": 2, "model": "learn.CourseCategory", "fields": {"name": "IT","status": 1}  },
+    { "pk": 3, "model": "learn.CourseCategory", "fields": {"name": "Design","status": 1}  },
+    { "pk": 4, "model": "learn.CourseCategory", "fields": {"name": "Web","status": 1}  },
+    { "pk": 5, "model": "learn.CourseCategory", "fields": {"name": "3D + Animation","status": 1}  },
+    { "pk": 6, "model": "learn.CourseCategory", "fields": {"name": "Developer","status": 1}  },
+    { "pk": 7, "model": "learn.CourseCategory", "fields": {"name": "Education + Elearning","status": 1}  },
+
+    { "pk": 1, "model": "learn.CourseSubCategory", "fields": {"name": "Outlook", "category":1, "status": 1}  },
+    { "pk": 2, "model": "learn.CourseSubCategory", "fields": {"name": "Access", "category":1, "status": 1}  },
+    { "pk": 3, "model": "learn.CourseSubCategory", "fields": {"name": "Excel", "category":1, "status": 1}  },
+    { "pk": 4, "model": "learn.CourseSubCategory", "fields": {"name": "Powerpoint", "category":1, "status": 1}  },
+    { "pk": 5, "model": "learn.CourseSubCategory", "fields": {"name": "Sharepoint", "category":2, "status": 1}  },
+    { "pk": 6, "model": "learn.CourseSubCategory", "fields": {"name": "Mac OS X, Unix", "category":2, "status": 1}  },
+    { "pk": 7, "model": "learn.CourseSubCategory", "fields": {"name": "Fireworks", "category":4, "status": 1}  },
+    { "pk": 8, "model": "learn.CourseSubCategory", "fields": {"name": "CSS", "category":4, "status": 1}  },
+    { "pk": 9, "model": "learn.CourseSubCategory", "fields": {"name": "Flash Professional, Illustrator", "category":4, "status": 1}  },
+    { "pk": 10, "model": "learn.CourseSubCategory", "fields": {"name": "Photoshop", "category":5, "status": 1}  },
+    { "pk": 11, "model": "learn.CourseSubCategory", "fields": {"name": "Mocha", "category":5, "status": 1}  },
+    { "pk": 12, "model": "learn.CourseSubCategory", "fields": {"name": "Maya", "category":5, "status": 1}  },
+    { "pk": 13, "model": "learn.CourseSubCategory", "fields": {"name": "MODO", "category":5, "status": 1}  },
+    { "pk": 14, "model": "learn.CourseSubCategory", "fields": {"name": "HTML", "category":6, "status": 1}  },
+    { "pk": 15, "model": "learn.CourseSubCategory", "fields": {"name": "ASP.NET", "category":6, "status": 1}  },
+    { "pk": 16, "model": "learn.CourseSubCategory", "fields": {"name": "Ruby", "category":6, "status": 1}  },
+    { "pk": 17, "model": "learn.CourseSubCategory", "fields": {"name": "Drupal", "category":6, "status": 1}  },
+    { "pk": 18, "model": "learn.CourseSubCategory", "fields": {"name": "Camtasia", "category":7, "status": 1}  },
+    { "pk": 19, "model": "learn.CourseSubCategory", "fields": {"name": "Captivate", "category":7, "status": 1}  },
+    { "pk": 20, "model": "learn.CourseSubCategory", "fields": {"name": "Moodle", "category":7, "status": 1}  },
+
+
+    { "pk": 1, "model": "learn.CourseProvider", "fields": {"name": "Udemy", "status": 1, "logo": "/media/logo/udemy_logo.svg" }  },
+    { "pk": 2, "model": "learn.CourseProvider", "fields": {"name": "Lynda", "status": 1, "logo": "/media/logo/lynda-linkedin-logo.jpg"}  },
+
+    { "pk": 1, "model": "learn.Course",
+      "fields":
+      {
+          "url": "http://www.lynda.com/Office-2003-tutorials/outlook-2003-essential-training/88-2.html",
+          "title":"Outlook 2003 Essential Training",
+          "description": "Outlook 2003 Essential Training with David Rivers is a movie-based tutorial designed to help new and existing Outlook users get a basic to intermediate understanding of this latest version of Microsoft Outlook. The training begins with a basic overview of the newly designed Outlook interface and quickly advances to cover such topics as sending e-mail, using contacts, tasks, the calendar, notes, mailbox options and much more. Exercise files accompany this training, allowing you to follow along and learn at your own pace.",
+          "status": 1,
+          "category":1,
+          "subcategory": 1,
+          "difficulty":"Beginner",
+          "duration": "5:45:49",
+          "provider": 2
+      }
+    },
+    { "pk": 2, "model": "learn.Course",
+      "fields":
+      {
+          "url": "http://www.lynda.com/Office-2007-tutorials/powerpoint-2007-essential-training/257-2.html",
+          "title":"PowerPoint 2007 Essential Training",
+          "description": "PowerPoint 2007 joins its Office counterparts by featuring a brand-new interface, as well as a selection of new powerful presentation features. Instructor David Rivers explains each of its new features in detail, including an essential overview of the new interface, navigating a presentation, creating and editing presentations, working with tables and charts, importing and exporting data, and sharing presentations via various media. Exercise files accompany the tutorials.",
+          "status": 1,
+          "category":1,
+          "subcategory": 4,
+          "difficulty":"Beginner",
+          "duration": "6:29:54",
+          "provider": 2
+      }
+    },
+    { "pk": 3, "model": "learn.Course",
+      "fields":
+      {
+          "url": "http://www.lynda.com/Office-2007-tutorials/sharepoint-2007-essential-training/503-2.html",
+          "title":"SharePoint 2007 Essential Training",
+          "description": "SharePoint 2007 Essential Training covers each aspect of using both Windows SharePoint Services and Microsoft Office SharePoint Server (MOSS). Instructor David Rivers takes viewers through the whole process, from smart content management to publishing collaborative projects and documents online. Along the way, he teaches how to create and organize sites; manage content; control security levels; understand simple and complex searches; and create and manage team sites, blogs, and meeting workspaces.",
+          "status": 1,
+          "category":2,
+          "subcategory": 5,
+          "difficulty":"Beginner",
+          "duration": "7:48:12",
+          "provider": 2
+      }
+    },
+    { "pk": 4, "model": "learn.Course",
+      "fields":
+      {
+          "url": "http://www.lynda.com/Excel-2007-tutorials/creating-charts-with-dynamic-data/58704-2.html",
+          "title":"Excel 2007: Creating Charts with Dynamic Data",
+          "description": "Excel 2007: Creating Charts with Dynamic Data shows how simple data in Excel can be used to build exciting and updatable charts. Microsoft Most Valuable Professional Curt Frye explains how to use both named ranges and Excel tables to create charts that adjust as the data changes. Curt demonstrates how to specify the number of points in a chart and how to use a drop-down list to select which data series is displayed. Finally, he shows how to use PivotChart reports to reorganize and visualize data on the fly. Exercise files accompany the course.",
+          "status": 1,
+          "category":1,
+          "subcategory": 3,
+          "difficulty":"Intermediate",
+          "duration": "0:40:47",
+          "provider": 2
+      }
+    },
+    { "pk": 5, "model": "learn.Course",
+      "fields":
+      {
+          "url": "http://www.lynda.com/HTML-5-tutorials/Mobile-Web-Design-Development-Fundamentals/76334-2.html",
+          "title":"Learning Mobile Web Design & Development",
+          "description": "This course surveys the core principles and techniques essential to building web sites for mobile devices. Author Joe Marini introduces the mobile context, sheds light on its unique coding requirements, and discusses interface design techniques that enhance existing sites for mobile viewing. The course shows how to approach designing for mobile form factors such as smaller screens and finger-based interaction, along with how to incorporate CSS3 and HTML5 capabilities, such as geolocation, local storage, and media queries.",
+          "status": 1,
+          "category":6,
+          "subcategory": 14,
+          "difficulty":"Beginner",
+          "duration": "5:47:50",
+          "provider": 2
+      }
+    }
+]

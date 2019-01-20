@@ -1,0 +1,47 @@
+{% extends "homebase.html" %}
+{% load staticfiles %}
+{% block title %} User Dashboard {% endblock %}
+{% block content %}
+    <div class="container-fluid g-py-40 g-px-100">
+        {% for course in courses %}
+        <div class="row justify-content-center g-mb-20">
+            <article>
+              <header class="g-mb-15">
+                <h2 class="h4 g-mb-5">
+                    <a class="u-link-v5 g-color-gray-dark-v1 g-color-primary--hover" href="{{course.url}}">{{course.title}}</a>
+                  </h2>
+                <a class="g-color-primary g-color-primary--hover" href="{{course.url}}">{{course.url}}</a>
+              </header>
+
+              <p class="g-mb-15">{{course.description}}</p>
+
+              <div class="d-lg-flex justify-content-between align-items-center">
+                <!-- Search Info -->
+                <ul class="list-inline g-mb-10 g-mb-0--lg">
+                  <li class="list-inline-item g-mr-30">
+                    <span><i class="icon-clock g-pos-rel g-top-1 g-color-blue g-mr-5"></i>Duration - {{course.duration}} </span>
+                  </li>
+                  <li class="list-inline-item g-mr-30">
+                     <span><i class="icon-shield g-pos-rel g-top-1 g-color-blue g-mr-5"></i>{{course.difficulty}}</span>
+                  </li>
+                  <li class="list-inline-item g-mr-30">
+                    <i class="icon-paper-clip g-pos-rel g-top-1 g-color-blue g-mr-5"></i> {{course.category.name}} / {{course.subcategory.name}}
+                  </li>
+                  <li class="list-inline-item g-mr-30">
+                    <img src="{{course.provider.logo}}" style="height:30px;" alt="{{course.provider.name}}" title="{{course.provider.name}}" />
+                  </li>
+                </ul>
+
+                <!-- Rating - don;t remove we need to add it later-->
+                <!--<div>-->
+                  <!--<span class="js-rating g-color-primary mr-2" data-rating="5"></span>-->
+                  <!--<span class="g-color-gray-dark-v5">Relevance 5.0 out of 4902 votes</span>-->
+                <!--</div>-->
+                <!-- Search Rating -->
+              </div>
+                <hr class="g-brd-gray-light-v4" />
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

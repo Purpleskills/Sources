@@ -46,17 +46,17 @@ class UdemyCourse(models.Model):
 
 
 class UdemyInstructedBy(models.Model):
-   instructors = models.ForeignKey(User, on_delete=models.CASCADE)
-   course = models.ForeignKey(Course, on_delete=models.CASCADE)
+   instructors = models.ForeignKey(UdemyUser, on_delete=models.CASCADE)
+   course = models.ForeignKey(UdemyCourse, on_delete=models.CASCADE)
 
 class UdemyCourseCategory(models.Model):
     sort_order = models.CharField(max_length=20)
     title = models.CharField(max_length=100)
-    title_cleaned = models_CharField(max_length=100)
+    title_cleaned = models.CharField(max_length=100)
 
 class UdemyCourseSubcategory(models.Model):
     category = models.ForeignKey(
-         'CourseCategory',
+         'UdemyCourseCategory',
           on_delete=models.CASCADE,
       )
     sort_order = models.CharField(max_length=20)
