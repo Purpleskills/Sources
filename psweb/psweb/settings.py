@@ -104,19 +104,32 @@ LOGOUT_REDIRECT_URL = '/home/'
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 if 'RDS_HOSTNAME' not in os.environ:
+ #   DATABASES = {
+ #       'default': {
+ #           'ENGINE': 'django.db.backends.mysql',
+ #           'NAME': 'purpleskillsdb',
+ #           'USER': 'psroot',
+ #           'PASSWORD': 'pswhatever1',
+ #           'HOST': '127.0.0.1',
+ #           'PORT': '',
+ #           'OPTIONS': {
+ #                   'charset': 'utf8mb4',
+ #                   'use_unicode': True, },
+ #           }
+ #       }
+   
+   
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'purpleskillsdb',
-            'USER': 'psroot',
-            'PASSWORD': 'pswhatever1',
-            'HOST': '127.0.0.1',
-            'PORT': '',
-            'OPTIONS': {
-                    'charset': 'utf8mb4',
-                    'use_unicode': True, },
-            }
-        }
+    	'default': {
+        	'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        	'NAME': 'purpleskillsdb',
+        	'USER':  'psroot',
+        	'PASSWORD': 'pswhatever1',
+        	'HOST': '127.0.0.1',
+       	 	'PORT': '',
+    		}
+	}
+  
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
