@@ -1,3 +1,4 @@
 django==2.0.1
 django-debug-toolbar
-psycopyg2
+postgresql==9.5
+psycopyg2==2.7.6.1

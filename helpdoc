@@ -1,0 +1,25 @@
+Installing postgresql
+[ https://www.fullstackpython.com/blog/postgresql-python-3-psycopg2-ubuntu-1604.html ]
+ steps in virtual env:
+ 1. sudo apt-get install postgresql libpq-dev postgresql-client postgresql-client-common
+ 2. sudo -i -u postgres
+    > createuser psroot -P --interactive
+    > createdb purpleskillsdb
+ 3. pip install psycopg2
+
+
+Running pgadmin4 from desktop
+>> https://gist.github.com/Prototype-X/fd8bf6d8b929224621613316bf37db02
+
+
+Starting the database
+>> service postgresql start
+
+Modifying models.py
+1. After schema changes create migration scripts ...
+    >> python manage.py makemigrations <app name>
+2. migrate
+    >> python manage.py migrate <app name>
+3. Load test data
+    >> python manage.py loaddata <fixture file path>
+
