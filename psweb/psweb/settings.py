@@ -100,7 +100,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'psweb.wsgi.application'
 ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL='psauth.CourseUser'
-LOGIN_URL = '/login/'
+LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL='/home/'
 LOGOUT_REDIRECT_URL = '/home/'
 

@@ -2,6 +2,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import redirect, render
 from .models import *
 from .forms import *
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def load_subcats(request):
     catid = request.GET.get('category')
@@ -22,8 +23,7 @@ def load_courses(request):
 
     return render(request, 'course_list_component.html', {'courses': courses})
 
-
-class DashBoardView(TemplateView):
+class DashBoardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
     form_class = CourseFilterForm
 

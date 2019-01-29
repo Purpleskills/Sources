@@ -143,18 +143,21 @@
             <!-- Navigation -->
             <div class="collapse navbar-collapse align-items-center flex-sm-row g-pt-10 g-pt-5--lg" id="navBar">
                 <ul class="navbar-nav text-uppercase g-pos-rel g-font-weight-600 ml-auto">
-                <!-- Dashboard -->
                     <li class="nav-item  g-mx-10--lg g-mx-15--xl">
                         <a href="/learn/" class="nav-link g-py-7 g-px-0">Dashboard</a>
                     </li>
-                <!-- End Intro -->
-                    <li class="nav-item  g-mx-10--lg g-mx-15--xl">
-                        {% if user.is_authenticated %}
-                            Hello {{user.first_name}}
-                        {% else %}
+                    {% if user.is_authenticated %}
+                        <li class="nav-item  g-mx-10--lg g-mx-15--xl">
+                            <span class="nav-link g-py-7 g-px-0">Hello {{user.first_name}}</span>
+                        </li>
+                        <li class="nav-item  g-mx-10--lg g-mx-15--xl">
+                            <a href="/auth/logout" class="nav-link g-py-7 g-px-0">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item  g-mx-10--lg g-mx-15--xl">
                             <a href="/auth/login" class="nav-link g-py-7 g-px-0">Login</a>
-                        {% endif %}
-                    </li>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
             <!-- End Navigation -->
