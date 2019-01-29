@@ -26,3 +26,10 @@ Modifying models.py
 For pulling udemy data from udemy into our udemy tables.
 1. Run #1 and #2 step above to create udemy tables.
 2. Run udemyUpdateTables.py to do the rest of the magic.
+
+
+== UI bits ==
+To have a consistent theme across pages we are using bootstrap 4 and crispy forms. A neat tutorial on basic how-tos can be
+found here -> https://simpleisbetterthancomplex.com/tutorial/2018/08/13/how-to-use-bootstrap-4-forms-with-django.html
+
+A more detailed help on crispy form -> https://django-crispy-forms.readthedocs.io/en/latest/crispy_tag_forms.html

@@ -59,10 +59,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'psweb',
     'home',
     'learn',
-    'contentprovider'
+    'contentprovider',
+    'psauth'
 )
 
 MIDDLEWARE = (
@@ -76,6 +78,7 @@ MIDDLEWARE = (
 )
 
 ROOT_URLCONF = 'psweb.urls'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 TEMPLATES = [
     {
@@ -96,7 +99,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'psweb.wsgi.application'
 ALLOWED_HOSTS = ['*']
-# AUTH_USER_MODEL='sauth.SeraUser'
+AUTH_USER_MODEL='psauth.CourseUser'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL='/home/'
 LOGOUT_REDIRECT_URL = '/home/'
@@ -201,3 +204,56 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'purpleskills.log',
+            'formatter': 'verbose',
+            'backupCount': 5,
+            'maxBytes': 1024 * 1024 * 3
+        },
+        'partner_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'am_partner.log',
+            'backupCount': 5,
+            'formatter': 'verbose',
+            'maxBytes': 1024 * 1024 * 3  # 3 MB
+        },
+        'console':{
+            'level':'INFO',
+            'class':'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers':['file'],
+            'propagate': True,
+            'level':'ERROR',
+        },
+        'purpleskills': {
+            'handlers': ['file'],
+            'level': 'INFO',
+        },
+        'consoleout': {
+            'handlers': ['console'],
+            'level':'ERROR',
+        }
+
+    }
+}

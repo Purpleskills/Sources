@@ -14,10 +14,17 @@ class CourseCategory(models.Model):
     name = models.CharField(max_length=256)
     status = models.SmallIntegerField()
 
+    def __str__(self):
+        return self.name
+
 class CourseSubCategory(models.Model):
     name = models.CharField(max_length=256)
     category = models.ForeignKey(CourseCategory, on_delete=models.CASCADE)
     status = models.SmallIntegerField()
+
+    def __str__(self):
+        return self.name
+
 
 class CourseProvider(models.Model):
     def GetLogoFilename(instance, filename):
@@ -26,6 +33,9 @@ class CourseProvider(models.Model):
     name = models.CharField(max_length=256)
     status = models.SmallIntegerField()
     logo = models.ImageField(upload_to=GetLogoFilename)
+
+    def __str__(self):
+        return self.name
 
 class Course(models.Model):
     url = models.URLField()
