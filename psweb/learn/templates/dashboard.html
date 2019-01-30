@@ -1,47 +1,78 @@
 {% extends "homebase.html" %}
 {% load staticfiles %}
 {% block title %} User Dashboard {% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).on('change','#id_category',function() {
+        var url = $("#filterform").attr("data-subcats-url");
+        var catid = $(this).val();
+        if (catid == "" ) {
+            $("#id_subcategory").html('');
+        } else {
+            $.ajax({
+                url: url,
+                data: {
+                    'category': catid
+                },
+                success: function (data) {
+                    $("#id_subcategory").html(data);
+                }
+            });
+        }
+    });
+
+</script>
+
+<script type="text/javascript">
+    $("#filterform").submit(function(event){
+        event.preventDefault(); //so that we stop normal form submit.
+        var url = $("#filterform").attr("data-filter-url");
+        var catid = $('#id_category').val();
+        var subcatid = $('#id_subcategory').val();
+        var providerid = $('#id_provider').val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'category': catid,
+                'subcategory': subcatid,
+                'provider': providerid
+            },
+            success: function (data) {
+                if (data == ""){
+                    $("#course_list_div").html("<h3>Currently no available courses. Please check back later.</h3>");
+                } else {
+                    $("#course_list_div").html(data);
+                }
+            },
+            error: function (erro) {
+                $("#course_list_div").html("<h3>Currently no available courses. Please check back later.</h3>");
+            }
+        });
+    });
+</script>
+{% endblock %}
+
 {% block content %}
     <div class="container-fluid g-py-40 g-px-100">
-        {% for course in courses %}
-        <div class="row justify-content-center g-mb-20">
-            <article>
-              <header class="g-mb-15">
-                <h2 class="h4 g-mb-5">
-                    <a class="u-link-v5 g-color-gray-dark-v1 g-color-primary--hover" href="{{course.url}}">{{course.title}}</a>
-                  </h2>
-                <a class="g-color-primary g-color-primary--hover" href="{{course.url}}">{{course.url}}</a>
-              </header>
 
-              <p class="g-mb-15">{{course.description}}</p>
-
-              <div class="d-lg-flex justify-content-between align-items-center">
-                <!-- Search Info -->
-                <ul class="list-inline g-mb-10 g-mb-0--lg">
-                  <li class="list-inline-item g-mr-30">
-                    <span><i class="icon-clock g-pos-rel g-top-1 g-color-blue g-mr-5"></i>Duration - {{course.duration}} </span>
-                  </li>
-                  <li class="list-inline-item g-mr-30">
-                     <span><i class="icon-shield g-pos-rel g-top-1 g-color-blue g-mr-5"></i>{{course.difficulty}}</span>
-                  </li>
-                  <li class="list-inline-item g-mr-30">
-                    <i class="icon-paper-clip g-pos-rel g-top-1 g-color-blue g-mr-5"></i> {{course.category.name}} / {{course.subcategory.name}}
-                  </li>
-                  <li class="list-inline-item g-mr-30">
-                    <img src="{{course.provider.logo}}" style="height:30px;" alt="{{course.provider.name}}" title="{{course.provider.name}}" />
-                  </li>
-                </ul>
-
-                <!-- Rating - don;t remove we need to add it later-->
-                <!--<div>-->
-                  <!--<span class="js-rating g-color-primary mr-2" data-rating="5"></span>-->
-                  <!--<span class="g-color-gray-dark-v5">Relevance 5.0 out of 4902 votes</span>-->
-                <!--</div>-->
-                <!-- Search Rating -->
-              </div>
-                <hr class="g-brd-gray-light-v4" />
-            </article>
-        </div>
-        {% endfor %}
+        <form method="post" id="filterform" data-subcats-url="{% url 'learn:ajax_load_subcats' %}" data-filter-url="{% url 'learn:ajax_load_courses' %}" novalidate>
+            {% csrf_token %}
+            <div class="row g-mb-40">
+                <div class="col-md-4"><strong>{{ form.category.label }}</strong> {{ form.category }}</div>
+                <div class="col-md-4"><strong>{{ form.subcategory.label }}</strong> {{ form.subcategory }}</div>
+                <div class="col-md-4"><strong>{{ form.provider.label }}</strong> {{ form.provider }}</div>
+            </div>
+            <div class="row g-mb-20">
+                <div class="col-md-4">
+                    <button type="submit" class="btn-u" id="id_go">Go</button>
+                </div>
+            </div>
+            <hr />
+            <div id="course_list_div">
+                <h3>Select from the above filtering criteria to see available courses</h3>
+            </div>
+        </form>
     </div>
 {% endblock content %}

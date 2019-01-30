@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <!-- CSS Global Compulsory -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css" type="text/css" />
-    <link rel="stylesheet" href="{% static 'assets/vendor/bootstrap/bootstrap.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'bootstrap4/css/bootstrap.min.css'%}" type="text/css">
     <!-- CSS Global Icons -->
     <link rel="stylesheet" href="{% static 'assets/vendor/icon-awesome/css/font-awesome.min.css'%}">
     <link rel="stylesheet" href="{% static 'assets/vendor/icon-line/css/simple-line-icons.css'%}">
@@ -45,7 +45,7 @@
     <script src="{% static 'assets/vendor/jquery-migrate/jquery-migrate.min.js' %}"></script>
     <script src="{% static 'assets/vendor/jquery-ui/jquery-ui.min.js' %}"></script>
     <script src="{% static 'assets/vendor/popper.min.js' %}"></script>
-    <script src="{% static 'assets/vendor/bootstrap/bootstrap.min.js' %}"></script>
+    <script src="{% static 'bootstrap4/js/bootstrap.min.js' %}"></script>
     <!-- JS Implementing Plugins -->
     <script src="{% static 'assets/vendor/slick-carousel/slick/slick.js' %}"></script>
     <script src="{% static 'assets/vendor/hs-megamenu/src/hs.megamenu.js' %}"></script>
@@ -143,12 +143,21 @@
             <!-- Navigation -->
             <div class="collapse navbar-collapse align-items-center flex-sm-row g-pt-10 g-pt-5--lg" id="navBar">
                 <ul class="navbar-nav text-uppercase g-pos-rel g-font-weight-600 ml-auto">
-                <!-- Dashboard -->
                     <li class="nav-item  g-mx-10--lg g-mx-15--xl">
                         <a href="/learn/" class="nav-link g-py-7 g-px-0">Dashboard</a>
                     </li>
-                <!-- End Intro -->
-
+                    {% if user.is_authenticated %}
+                        <li class="nav-item  g-mx-10--lg g-mx-15--xl">
+                            <span class="nav-link g-py-7 g-px-0">Hello {{user.first_name}}</span>
+                        </li>
+                        <li class="nav-item  g-mx-10--lg g-mx-15--xl">
+                            <a href="/auth/logout" class="nav-link g-py-7 g-px-0">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item  g-mx-10--lg g-mx-15--xl">
+                            <a href="/auth/login" class="nav-link g-py-7 g-px-0">Login</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
             <!-- End Navigation -->
@@ -249,5 +258,6 @@
     {% endif %}
 
 </div> <!-- /container -->
+{% block js %}{% endblock %}
 </body>
 </html>

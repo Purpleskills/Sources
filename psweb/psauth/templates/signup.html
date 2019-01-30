@@ -1,0 +1,42 @@
+{% extends "homebase.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %} User Sign up {% endblock %}
+
+{% block content %}
+    <div class="container g-py-40 g-px-100">
+        <h2>Sign Up</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.username|as_crispy_field }}
+            <div class="row">
+                <div class="col-6">
+                    {{ form.first_name|as_crispy_field }}
+                </div>
+                <div class="col-6">
+                    {{ form.last_name|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    {{ form.email|as_crispy_field }}
+                </div>
+                <div class="col-6">
+                    {{ form.phone|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    {{ form.password1|as_crispy_field }}
+                </div>
+                <div class="col-6">
+                    {{ form.password2|as_crispy_field }}
+                </div>
+            </div>
+            {{ form.company|as_crispy_field }}
+            <button type="submit" class="btn btn-dark">Sign up</button>
+        </form>
+        <h4 class="g-mt-40">Already have an account? <a href="/auth/login">Log in</a>.</h4>
+    </div>
+{% endblock content %}
