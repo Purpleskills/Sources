@@ -10,7 +10,7 @@ c = HTTPSConnection("www.udemy.com", context=ssl._create_unverified_context())
 userAndPass = b64encode(b"GpxNVedkBslJE6CTga0f56iRG4vzzmYU24gzH0g5:FGMx5x8Vjr7LyBokikzIT9t4uFSSa30HMhMGcEHZBy38FV2snjwew0l9o3ctugs1KRcIvBQyZDidYKuMKrWUGHCA0qRNYMvFg859QhpatbpBPZW3QNAeJzpHBAYNkBoy").decode("ascii")
 headers = { 'Authorization' : 'Basic %s' %  userAndPass }
 #then connect
-c.request('GET', '/api-2.0/courses', headers=headers)
+c.request('GET', '/api-2.0/courses?page_size=100', headers=headers)
 #get the response back
 res = c.getresponse()
 # at this point you could check the status etc
@@ -22,23 +22,27 @@ conn = psycopg2.connect(database='purpleskillsdb', user='psroot', password='pswh
 
 data = json.loads(data)
 results = data['results']
+#print (results)
 # data here is a list of dicts
-#data = res.json()['data']
-
-print (data)
+udemyPrefix = "https://www.udemy.com"
+#print (data)
 cur = conn.cursor()
 
 fields = [
      'id',
-     'title'
-    # 'archive_time'
+     'title',
+     'url'
 ]
+
+
+cur.execute("INSERT INTO learn_courseprovider (name, status, logo) SELECT %s, %s, %s WHERE NOT EXISTS (SELECT 1 FROM learn_courseprovider where name = \'Udemy\') ", ("Udemy","0","https://www.udemy.com/staticx/udemy/images/v6/mstile-144x144.png"))
 
 for item in results:
     my_data = {field: item[field] for field in fields}
-    print (my_data)
-    #cur.execute("INSERT INTO contentprovider_udemycourse VALUES \'(%s)\'", (json.dumps(my_data),))
-    cur.execute("INSERT INTO contentprovider_udemycourse (id,title) VALUES (%s, %s)", (my_data['id'],my_data['title']))
+    cur.execute("INSERT INTO contentprovider_udemycourse (id,title,url) VALUES (%s, %s, %s) ON CONFLICT(id) DO NOTHING ", (my_data['id'],my_data['title'],udemyPrefix+my_data['url']))
+    cur.execute("INSERT INTO learn_course (title,url, provider_id) SELECT  %s, %s, ID FROM learn_courseprovider where name = \'Udemy\' AND  NOT EXISTS (SELECT 1 FROM learn_course where title=%s)", (my_data['title'],udemyPrefix+my_data['url'], my_data['title'])) 
+
+
 
 
 # commit changes

@@ -40,13 +40,13 @@ class CourseProvider(models.Model):
 class Course(models.Model):
     url = models.URLField()
     title = models.CharField(max_length=256)
-    description = models.TextField()
-    status = models.SmallIntegerField()
-    category = models.ForeignKey(CourseCategory, on_delete=models.PROTECT)
-    subcategory = models.ForeignKey(CourseSubCategory, on_delete=models.PROTECT)
-    difficulty = models.CharField( max_length=16, choices=[(tag, tag.value) for tag in DifficultyChoice])
-    duration = models.DurationField()
-    provider = models.ForeignKey(CourseProvider, on_delete=models.PROTECT)
+    description = models.TextField(null=True)
+    status = models.SmallIntegerField(null=True)
+    category = models.ForeignKey(CourseCategory, on_delete=models.PROTECT, null=True)
+    subcategory = models.ForeignKey(CourseSubCategory, on_delete=models.PROTECT, null=True)
+    difficulty = models.CharField( max_length=16, choices=[(tag, tag.value) for tag in DifficultyChoice], null=True)
+    duration = models.DurationField(null=True)
+    provider = models.ForeignKey(CourseProvider, on_delete=models.PROTECT, null=True)
 
 
   
