@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^$', DashBoardView.as_view(), name='dashboard'),
     url(r'^ajax/load_subcats/$', load_subcats, name='ajax_load_subcats'),
     url(r'^ajax/load_courses/$', load_courses, name='ajax_load_courses'),
+    url(r'^ajax/init_calendar/$', init_calendar, name='ajax_init_calendar'),
+    url(r'^ajax/schedule_courses/$', schedule_courses, name='ajax_schedule_courses'),
 ]

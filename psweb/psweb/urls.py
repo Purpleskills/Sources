@@ -15,6 +15,8 @@ urlpatterns = [
     url(r'^home/', include('home.urls', namespace='home')),
     url(r'^learn/', include('learn.urls', namespace='learn')),
     url(r'^auth/', include('psauth.urls', namespace='auth')),
+    url(r'^schedule/', include('schedule.urls')),
+    url(r'^fullcalendar/', TemplateView.as_view(template_name="fullcalendar.html"), name='fullcalendar'),
     # url(r'^admin/', include(admin.site.urls)),
 ] + static("/media/", document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static('/.well-known', document_root=os.path.dirname(settings.BASE_DIR) + '/.well-known')
 

@@ -19,16 +19,17 @@
     <link rel="stylesheet" href="{% static 'assets/vendor/icon-etlinefont/style.css'%}">
     <link rel="stylesheet" href="{% static 'assets/vendor/icon-line-pro/style.css'%}">
     <link rel="stylesheet" href="{% static 'assets/vendor/icon-hs/style.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/dzsparallaxer/dzsparallaxer.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/dzsparallaxer/dzsscroller/scroller.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/dzsparallaxer/advancedscroller/plugin.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/animate.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/cubeportfolio-full/cubeportfolio/css/cubeportfolio.min.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/fancybox/jquery.fancybox.min.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/slick-carousel/slick/slick.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/typedjs/typed.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/hs-megamenu/src/hs.megamenu.css'%}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/hamburgers/hamburgers.min.css'%}">
+
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/dzsparallaxer/dzsparallaxer.css'%}">-->
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/dzsparallaxer/dzsscroller/scroller.css'%}">-->
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/dzsparallaxer/advancedscroller/plugin.css'%}">-->
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/animate.css'%}">-->
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/cubeportfolio-full/cubeportfolio/css/cubeportfolio.min.css'%}">-->
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/fancybox/jquery.fancybox.min.css'%}">-->
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/slick-carousel/slick/slick.css'%}">-->
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/typedjs/typed.css'%}">-->
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/hs-megamenu/src/hs.megamenu.css'%}">-->
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/hamburgers/hamburgers.min.css'%}">-->
 
     <!-- CSS Unify -->
     <link rel="stylesheet" href="{% static 'assets/css/unify-core.css'%}">
@@ -39,6 +40,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/custom.css'%}">
 
     {{ form.media.css }}
+    {% block extra_css %}{% endblock %}
     <script src="https://yandex.st/json2/2011-01-18/json2.min.js"></script>
     <!-- JS Global Compulsory -->
     <script src="{% static 'assets/vendor/jquery/jquery.min.js' %}"></script>
@@ -47,29 +49,30 @@
     <script src="{% static 'assets/vendor/popper.min.js' %}"></script>
     <script src="{% static 'bootstrap4/js/bootstrap.min.js' %}"></script>
     <!-- JS Implementing Plugins -->
-    <script src="{% static 'assets/vendor/slick-carousel/slick/slick.js' %}"></script>
-    <script src="{% static 'assets/vendor/hs-megamenu/src/hs.megamenu.js' %}"></script>
+    <!--<script src="{% static 'assets/vendor/slick-carousel/slick/slick.js' %}"></script>-->
+    <!--<script src="{% static 'assets/vendor/hs-megamenu/src/hs.megamenu.js' %}"></script>-->
 
-    <script src="{% static 'assets/vendor/cubeportfolio-full/cubeportfolio/js/jquery.cubeportfolio.min.js' %}"></script>
-    <script src="{% static 'assets/vendor/dzsparallaxer/dzsparallaxer.js' %}"></script>
-    <script src="{% static 'assets/vendor/dzsparallaxer/dzsscroller/scroller.js' %}"></script>
-    <script src="{% static 'assets/vendor/dzsparallaxer/advancedscroller/plugin.js' %}"></script>
-    <script src="{% static '/assets/vendor/fancybox/jquery.fancybox.min.js' %}"></script>
-    <script src="{% static 'assets/vendor/typedjs/typed.min.js' %}"></script>
+    <!--<script src="{% static 'assets/vendor/cubeportfolio-full/cubeportfolio/js/jquery.cubeportfolio.min.js' %}"></script>-->
+    <!--<script src="{% static 'assets/vendor/dzsparallaxer/dzsparallaxer.js' %}"></script>-->
+    <!--<script src="{% static 'assets/vendor/dzsparallaxer/dzsscroller/scroller.js' %}"></script>-->
+    <!--<script src="{% static 'assets/vendor/dzsparallaxer/advancedscroller/plugin.js' %}"></script>-->
+    <!--<script src="{% static '/assets/vendor/fancybox/jquery.fancybox.min.js' %}"></script>-->
+    <!--<script src="{% static 'assets/vendor/typedjs/typed.min.js' %}"></script>-->
     <!-- JS Unify -->
     <script src="{% static 'assets/js/hs.core.js' %}"></script>
     <script src="{% static 'assets/js/components/hs.header.js' %}"></script>
-    <script src="{% static 'assets/js/helpers/hs.hamburgers.js' %}"></script>
-    <script src="{% static 'assets/js/components/hs.tabs.js' %}"></script>
-    <script src="{% static 'assets/js/components/hs.onscroll-animation.js' %}"></script>
-    <script src="{% static 'assets/js/components/hs.cubeportfolio.js' %}"></script>
-    <script src="{% static 'assets/js/components/hs.popup.js' %}"></script>
-    <script src="{% static 'assets/js/components/hs.counter.js' %}"></script>
-    <script src="{% static 'assets/js/components/hs.go-to.js' %}"></script>
+    <!--<script src="{% static 'assets/js/helpers/hs.hamburgers.js' %}"></script>-->
+    <!--<script src="{% static 'assets/js/components/hs.tabs.js' %}"></script>-->
+    <!--<script src="{% static 'assets/js/components/hs.onscroll-animation.js' %}"></script>-->
+    <!--<script src="{% static 'assets/js/components/hs.cubeportfolio.js' %}"></script>-->
+    <!--<script src="{% static 'assets/js/components/hs.popup.js' %}"></script>-->
+    <!--<script src="{% static 'assets/js/components/hs.counter.js' %}"></script>-->
+    <!--<script src="{% static 'assets/js/components/hs.go-to.js' %}"></script>-->
     <!-- JS Customization -->
     <script src="{% static 'assets/js/custom.js' %}"></script>
     <script src="{% static 'csrf.js' %}"></script>
     {{ form.media.js }}
+    {% block extra_js %}{% endblock %}
 
     <script>
         $(document).on('ready', function () {

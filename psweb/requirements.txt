@@ -3,4 +3,4 @@ django-debug-toolbar
 postgresql==9.5
 psycopyg2==2.7.6.1
 django-crispy-forms==1.7.2
-
+django-scheduler==0.8.8

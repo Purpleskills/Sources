@@ -2,7 +2,13 @@ from django.views.generic import TemplateView
 from django.shortcuts import redirect, render
 from .models import *
 from .forms import *
+import datetime
+from datetime import timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
+from schedule.models import Calendar, Event, Rule
+from schedule.settings import USE_FULLCALENDAR
+from django.http import HttpResponse
+import math
 
 def load_subcats(request):
     catid = request.GET.get('category')
@@ -22,6 +28,38 @@ def load_courses(request):
         courses = courses.filter(provider__id=provider).order_by('title')
 
     return render(request, 'course_list_component.html', {'courses': courses})
+
+
+def init_calendar(request):
+    user = request.user
+    calendar_name = "scheduled_cal_" + str(user.id)
+    calendar = Calendar.objects.get_or_create_calendar_for_object(obj=user, name=calendar_name)
+    return HttpResponse(calendar_name)
+    # return "{'calendar':calendar_name}"
+
+def schedule_courses(request):
+    courseid = request.GET.get('courseid')
+    duration = int(request.GET.get('duration'))
+    startdatestr = request.GET.get('startdate')
+    course = Course.objects.get(pk=courseid)
+    start = datetime.datetime.strptime(startdatestr, "%Y-%m-%d")
+    end = start + timedelta(hours=duration)
+    no_of_days_required = math.ceil(course.duration.seconds / 3600) / duration
+    until = start + timedelta(days=no_of_days_required)
+    rule = Rule.objects.create(frequency="DAILY")
+    calendar_slug = 'scheduled_cal_' + str(request.user.id)
+    calendar = Calendar.objects.get(slug=calendar_slug)
+    event = Event.objects.create(
+        title='Training: ' + course.title,
+        start=start,
+        end=end,
+        rule=rule,
+        calendar=calendar,
+        end_recurring_period=until,
+        creator=request.user
+    )
+    return HttpResponse("Success")
+
 
 class DashBoardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
