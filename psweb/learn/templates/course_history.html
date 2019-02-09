@@ -1,0 +1,59 @@
+{% extends "homebase.html" %}
+{% load staticfiles %}
+{% block title %} User training history {% endblock %}
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'assets/js/jquery.raty-fa.js' %}"></script>
+
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+    $('.course-rating').raty({
+        click: function(score, evt) {
+            $.post("{% url 'learn:ajax_rate_courses' %}", {
+                                event:  $(this).attr("data-event"),
+                                score: score
+            });
+        }
+    });
+});
+//-->
+</script>
+{% endblock extra_js %}
+
+{% block content %}
+    <div class="container-fluid g-py-40 g-px-100">
+        <div class="row">
+            <div class="col">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th class="text-center">Started on</th>
+                            <th class="text-center">Date of completion</th>
+                            <th class="text-center">Frequency</th>
+                            <th class="text-center">Certificate</th>
+                            <th class="text-center">Rate this course</th>
+                            <th class="text-center">Feedback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in object_list %}
+                        <form method="post" class="historyform" novalidate>
+                            {% csrf_token %}
+                            <tr>
+                                <td>{{event.title}}</td>
+                                <td>{{event.start}}</td>
+                                <td>{{event.end_recurring_period}}</td>
+                                <td>{{event.rule.frequency}}</td>
+                                <td><label for="certupload"> Select the certificate file to upload</label>&nbsp;&nbsp;<input type="file" id="certupload"></td>
+                                <td><span id="coursediv" class="course-rating" data-event="{{event.id}}"></span></td>
+                                <td><textarea class="form-conrol" placeholder="add any feedback that you may have on this course." cols="50"></textarea></td>
+                            </tr>
+                        </form>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

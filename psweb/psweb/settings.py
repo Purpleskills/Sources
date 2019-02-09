@@ -60,12 +60,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'djmoney',
     'schedule',
     'psweb',
     'home',
+    'psauth',
     'learn',
     'contentprovider',
-    'psauth'
 )
 
 MIDDLEWARE = (
@@ -157,12 +158,12 @@ if 'RDS_HOSTNAME' not in os.environ:
 
     INSTALLED_APPS += (
              #'fixture_magic',
-             'debug_toolbar',
+             # 'debug_toolbar',
              #'debug_panel',
              #'sslserver',
     )
     DEBUG_TOOLBAR_PATCH_SETTINGS = True
-    MIDDLEWARE = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE
+    # MIDDLEWARE = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE
 else:
     DATABASES = {
         'default': {
@@ -227,10 +228,10 @@ LOGGING = {
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 3
         },
-        'partner_file': {
+        'provider_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'am_partner.log',
+            'filename': 'provider.log',
             'backupCount': 5,
             'formatter': 'verbose',
             'maxBytes': 1024 * 1024 * 3  # 3 MB

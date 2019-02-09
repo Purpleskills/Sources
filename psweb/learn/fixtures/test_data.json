@@ -32,6 +32,13 @@
     { "pk": 1, "model": "learn.CourseProvider", "fields": {"name": "Udemy", "status": 1, "logo": "/media/logo/udemy_logo.svg" }  },
     { "pk": 2, "model": "learn.CourseProvider", "fields": {"name": "Lynda", "status": 1, "logo": "/media/logo/lynda-linkedin-logo.jpg"}  },
 
+    { "pk": 1, "model": "learn.Instructor", "fields": {"name": "David Rivers"}  },
+    { "pk": 2, "model": "learn.Instructor", "fields": {"name": "Mark Swift"}  },
+    { "pk": 3, "model": "learn.Instructor", "fields": {"name": "Shane Rebenschied"}  },
+    { "pk": 4, "model": "learn.Instructor", "fields": {"name": "Lorna Daly"}  },
+    { "pk": 5, "model": "learn.Instructor", "fields": {"name": "Sean Conrad"}  },
+
+
     { "pk": 1, "model": "learn.Course",
       "fields":
       {
@@ -43,7 +50,9 @@
           "subcategory": 1,
           "difficulty":"Beginner",
           "duration": "5:45:49",
-          "provider": 2
+          "provider": 2,
+          "price":12000,
+          "price_currency":"INR"
       }
     },
     { "pk": 2, "model": "learn.Course",
@@ -57,7 +66,9 @@
           "subcategory": 4,
           "difficulty":"Beginner",
           "duration": "6:29:54",
-          "provider": 2
+          "provider": 2,
+          "price":5500,
+          "price_currency":"INR"
       }
     },
     { "pk": 3, "model": "learn.Course",
@@ -71,7 +82,9 @@
           "subcategory": 5,
           "difficulty":"Beginner",
           "duration": "7:48:12",
-          "provider": 2
+          "provider": 2,
+          "price":6500,
+          "price_currency":"INR"
       }
     },
     { "pk": 4, "model": "learn.Course",
@@ -85,7 +98,9 @@
           "subcategory": 3,
           "difficulty":"Intermediate",
           "duration": "0:40:47",
-          "provider": 2
+          "provider": 2,
+          "price":0,
+          "price_currency":"INR"
       }
     },
     { "pk": 5, "model": "learn.Course",
@@ -99,9 +114,19 @@
           "subcategory": 14,
           "difficulty":"Beginner",
           "duration": "5:47:50",
-          "provider": 2
+          "provider": 2,
+          "price":16500,
+          "price_currency":"INR"
       }
     },
+
+    { "pk": 1, "model": "learn.course_instructors", "fields": {"course": 1, "instructor": 1}  },
+    { "pk": 2, "model": "learn.course_instructors", "fields": {"course": 1, "instructor": 2}  },
+    { "pk": 3, "model": "learn.course_instructors", "fields": {"course": 2, "instructor": 3}  },
+    { "pk": 4, "model": "learn.course_instructors", "fields": {"course": 3, "instructor": 2}  },
+    { "pk": 5, "model": "learn.course_instructors", "fields": {"course": 4, "instructor": 4}  },
+    { "pk": 6, "model": "learn.course_instructors", "fields": {"course": 5, "instructor": 5}  },
+
     {
         "pk": 1,
         "model": "psauth.company",
