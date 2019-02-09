@@ -19,9 +19,9 @@ data = res.read()
 
 
 conn = psycopg2.connect(database='purpleskillsdb', user='psroot', password='pswhatever1', host='127.0.0.1', port='')
-
-data = json.loads(data)
-results = data['results']
+str_data = data.decode('utf8')
+json_data = json.loads(str_data)
+results = json_data['results']
 #print (results)
 # data here is a list of dicts
 udemyPrefix = "https://www.udemy.com"
