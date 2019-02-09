@@ -76,19 +76,31 @@
                 refresh_calendar('{{user.id}}', "");
             }
         });
+
+        $("#id_topic").autocomplete({
+            source: "/learn/ajax/topic/autocomplete/",
+            minLength: 2,
+            open: function(){
+                setTimeout(function () {
+                    $('.ui-autocomplete').css('z-index', 99);
+                }, 0);
+            }
+        });
     });
     $("#filterform").submit(function(event){
         event.preventDefault(); //so that we stop normal form submit.
         var url = $("#filterform").attr("data-filter-url");
-        var catid = $('#id_category').val();
-        var subcatid = $('#id_subcategory').val();
+        //var catid = $('#id_category').val();
+        //var subcatid = $('#id_subcategory').val();
+        var topic = $('#id_topic').val();
+        var difficulty = $('#id_difficulty').val();
         var providerid = $('#id_provider').val();
 
         $.ajax({
             url: url,
             data: {
-                'category': catid,
-                'subcategory': subcatid,
+                'topic': topic,
+                'difficulty': difficulty,
                 'provider': providerid
             },
             success: function (data) {
@@ -104,7 +116,7 @@
         });
     });
 
-    //$("#scheduleform").submit(function(event){
+
     $(document).on('submit','.scheduleform', function(event){
         event.preventDefault(); //so that we stop normal form submit.
 
@@ -151,8 +163,8 @@
                 <form method="post" id="filterform" data-subcats-url="{% url 'learn:ajax_load_subcats' %}" data-filter-url="{% url 'learn:ajax_load_courses' %}" novalidate>
                 {% csrf_token %}
                     <div class="row g-mb-40">
-                        <div class="col-md-4"><strong>{{ form.category.label }}</strong> {{ form.category }}</div>
-                        <div class="col-md-4"><strong>{{ form.subcategory.label }}</strong> {{ form.subcategory }}</div>
+                        <div class="col-md-4"><strong>{{ form.topic.label }}<br /></strong> {{ form.topic }}</div>
+                        <div class="col-md-4"><strong>{{ form.difficulty.label }}</strong> {{ form.difficulty }}</div>
                         <div class="col-md-4"><strong>{{ form.provider.label }}</strong> {{ form.provider }}</div>
                     </div>
                     <div class="row g-mb-20">
@@ -175,4 +187,4 @@
         </div>
 
     </div>
-{% endblock content %}
+{% endblock content %}`

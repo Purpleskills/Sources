@@ -9,6 +9,7 @@ class DifficultyChoice(Enum):
     Intermediate = "Intermediate"
     Difficult = "Difficult"
     VeryDifficult = "Very Difficult"
+    All = "All"
 
 LOGO_UPLOAD_TO = getattr(settings, 'LOGO_UPLOAD_TO', 'logo/')
 

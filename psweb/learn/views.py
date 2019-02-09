@@ -1,4 +1,5 @@
 from django.views.generic import TemplateView, ListView
+from django.views.generic.detail import View
 from django.shortcuts import redirect, render
 from .models import *
 from .forms import *
@@ -17,14 +18,14 @@ def load_subcats(request):
     return render(request, 'subcat_dropdown_options.html', {'subcats': subcats})
 
 def load_courses(request):
-    catid = request.GET.get('category')
-    subcatid = request.GET.get('subcategory')
+    topic = request.GET.get('topic')
+    difficulty = request.GET.get('difficulty')
     provider = request.GET.get('provider')
     courses = Course.objects.filter(status=True).order_by('title')
-    if catid != "":
-        courses = courses.filter(category__id=catid).order_by('title')
-        if subcatid != "":
-            courses = courses.filter(subcategory__id=subcatid).order_by('title')
+    if topic != "":
+        courses = courses.filter(title__icontains=topic).order_by('title')
+    if difficulty != "" and difficulty != "DifficultyChoice.All":
+        courses = courses.filter(difficulty=difficulty).order_by('title')
     if provider != "":
         courses = courses.filter(provider__id=provider).order_by('title')
 
@@ -102,3 +103,16 @@ class  UserHistoryView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Event.objects.all().order_by('-end_recurring_period')
+
+class CourseFilterView (LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        results = {'success':False}
+        GET = request.GET
+        if 'term' in request.GET:
+            term = request.GET['term']
+            data = Course.objects.filter(title__icontains=term).values_list('category', flat=True)
+            json = list(data)
+            results = {'data': data}
+
+        result_json = json.dumps(results)
+        return HttpResponse(result_json, content_type='application/json')

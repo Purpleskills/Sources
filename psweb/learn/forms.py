@@ -4,15 +4,11 @@ from .models import *
 class CourseFilterForm(forms.Form):
     class Meta:
         # model = Course
-        fields = ('category', 'subcategory', 'provider')
+        fields = ('difficulty', 'provider')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # self.fields['category'].queryset = CourseCategory.objects.none()
-
-    category = forms.ModelChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control'}),
-                                          queryset=CourseCategory.objects.all())
-    subcategory = forms.ModelChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control'}),
-                                     queryset=CourseSubCategory.objects.all())
+    topic = forms.CharField(label='Course topic', widget=forms.TextInput( attrs={ 'class': 'form-control', 'class': 'basicAutoComplete'}))
+    difficulty = forms.ChoiceField(label='Difficulty level', required=False,
+                                         initial=DifficultyChoice.All, choices=[(tag, tag.value) for tag in DifficultyChoice],
+                                         widget=forms.Select(attrs={'class': 'form-control'}))
     provider = forms.ModelChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control'}),
                                      queryset=CourseProvider.objects.all())
