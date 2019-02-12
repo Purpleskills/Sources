@@ -1,5 +1,5 @@
 {% for course in courses %}
-    <div class="row justify-content-center g-mb-20">
+    <div class="row align-items-start g-mb-20">
         <form method="post" class="scheduleform" data-schedule-url="{% url 'learn:ajax_schedule_courses' %}" novalidate>
         {% csrf_token %}
             <article>
@@ -10,7 +10,7 @@
                     <a class="g-color-primary g-color-primary--hover" href="{{course.url}}">{{course.url}}</a>
                 </header>
 
-                <p class="g-mb-15">{{course.description}}</p>
+                <p class="g-mb-15">{%if course.description%}{{course.description}}{%else%}No Description Available{%endif%}</p>
 
                 <div class="d-lg-flex justify-content-between align-items-center">
                     <ul class="list-inline g-mb-10 g-mb-0--lg">
@@ -21,7 +21,9 @@
                             <span><i class="icon-shield g-pos-rel g-top-1 g-color-blue g-mr-5"></i>{{course.difficulty}}</span>
                         </li>
                         <li class="list-inline-item g-mr-30">
-                            <i class="icon-paper-clip g-pos-rel g-top-1 g-color-blue g-mr-5"></i> {{course.category.name}} / {{course.subcategory.name}}
+                            {%if course.tags%}
+                                <i class="icon-paper-clip g-pos-rel g-top-1 g-color-blue g-mr-5"></i> {{course.tags}}
+                            {%endif%}
                         </li>
                         <li class="list-inline-item g-mr-30">
                             <img src="{{course.provider.logo}}" style="height:30px;" alt="{{course.provider.name}}" title="{{course.provider.name}}" />
