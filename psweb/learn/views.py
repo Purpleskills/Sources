@@ -1,21 +1,14 @@
 from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import View
 from django.shortcuts import redirect, render
-from .models import *
 from .forms import *
 import datetime
 from datetime import timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from schedule.models import Calendar, Event, Rule
-from schedule.settings import USE_FULLCALENDAR
 from django.http import HttpResponse
 import math
 import logging
-
-def load_subcats(request):
-    catid = request.GET.get('category')
-    subcats = CourseSubCategory.objects.filter(category__id=catid).order_by('name')
-    return render(request, 'subcat_dropdown_options.html', {'subcats': subcats})
 
 def load_courses(request):
     topic = request.GET.get('topic')

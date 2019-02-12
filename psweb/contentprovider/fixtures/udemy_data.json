@@ -1,0 +1,14 @@
+[
+    { "pk": 1, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Business","active": true}  },
+    { "pk": 2, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Devlopment","active": true}  },
+    { "pk": 3, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Design","active": true}  },
+    { "pk": 4, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Health & Fitness","active": true}  },
+    { "pk": 5, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "IT & Software","active": true}  },
+    { "pk": 6, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Lifestyle","active": true}  },
+    { "pk": 7, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Marketing","active": true}  },
+    { "pk": 8, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Music","active": true}  },
+    { "pk": 9, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Office Productivity","active": true}  },
+    { "pk": 10, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Personal Development","active": true}  },
+    { "pk": 11, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Photography","active": true}  },
+    { "pk": 12, "model": "contentprovider.UdemyCourseCategory", "fields": {"title": "Teaching & Academics","active": true}  }
+]

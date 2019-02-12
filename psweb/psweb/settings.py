@@ -158,11 +158,11 @@ if 'RDS_HOSTNAME' not in os.environ:
 
     INSTALLED_APPS += (
              #'fixture_magic',
-             # 'debug_toolbar',
+             #'debug_toolbar',
              #'debug_panel',
              #'sslserver',
     )
-    DEBUG_TOOLBAR_PATCH_SETTINGS = True
+    # DEBUG_TOOLBAR_PATCH_SETTINGS = True
     # MIDDLEWARE = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE
 else:
     DATABASES = {

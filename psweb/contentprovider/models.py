@@ -76,9 +76,8 @@ class UdemyCourse(models.Model):
 
 
 class UdemyCourseCategory(models.Model):
-    sort_order = models.CharField(max_length=20)
     title = models.CharField(max_length=100)
-    title_cleaned = models.CharField(max_length=100)
+    active = models.BooleanField(default=False)
 
 class UdemyCourseSubcategory(models.Model):
     category = models.ForeignKey(

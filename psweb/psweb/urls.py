@@ -16,12 +16,13 @@ urlpatterns = [
     url(r'^learn/', include('learn.urls', namespace='learn')),
     url(r'^auth/', include('psauth.urls', namespace='auth')),
     url(r'^schedule/', include('schedule.urls')),
+    url(r'^contentprovider/', include('contentprovider.urls')),
     url(r'^fullcalendar/', TemplateView.as_view(template_name="fullcalendar.html"), name='fullcalendar'),
     # url(r'^admin/', include(admin.site.urls)),
 ] + static("/media/", document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static('/.well-known', document_root=os.path.dirname(settings.BASE_DIR) + '/.well-known')
 
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += [
-        url(r'^__debug__/', include(debug_toolbar.urls))
-    ]
+# if settings.DEBUG:
+#     import debug_toolbar
+#     urlpatterns += [
+#         url(r'^__debug__/', include(debug_toolbar.urls))
+#     ]

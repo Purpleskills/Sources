@@ -39,24 +39,26 @@
     function refresh_calendar(userid, calendar_slug){
         if (calendar_slug != "" ){
             $('#calendar').fullCalendar({
+                defaultView: 'listYear',
                 timeZone: 'UTC',
                 themeSystem: 'bootstrap4',
                 header: {
-                    left: 'prev,next today',
+                    left: 'prev,next',
                     center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
+                    right: ''
                 },
                 eventLimit: true,
                 events: '/schedule/api/occurrences?calendar_slug=' + calendar_slug
             });
         } else {
             $('#calendar').fullCalendar({
+                defaultView: 'listYear',
                 timeZone: 'UTC',
                 themeSystem: 'bootstrap4',
                 header: {
-                    left: 'prev,next today',
+                    left: 'prev,next',
                     center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
+                    right: ''
                 }
             });
         }
@@ -160,7 +162,7 @@
     <div class="container-fluid g-py-40 g-px-100">
         <div class="row">
             <div class="col">
-                <form method="post" id="filterform" data-subcats-url="{% url 'learn:ajax_load_subcats' %}" data-filter-url="{% url 'learn:ajax_load_courses' %}" novalidate>
+                <form method="post" id="filterform" novalidate>
                 {% csrf_token %}
                     <div class="row g-mb-40">
                         <div class="col-md-4"><strong>{{ form.topic.label }}<br /></strong> {{ form.topic }}</div>

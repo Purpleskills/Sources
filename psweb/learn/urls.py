@@ -7,7 +7,6 @@ urlpatterns = [
     # url(r'^$', TemplateView.as_view(template_name='home.html')),
     url(r'^$', DashBoardView.as_view(), name='dashboard'),
     url(r'^history/$', UserHistoryView.as_view(), name='user-history'),
-    url(r'^ajax/load_subcats/$', load_subcats, name='ajax_load_subcats'),
     url(r'^ajax/topic/autocomplete/$', CourseFilterView.as_view(), name='ajax_tpic_filter'),
     url(r'^ajax/load_courses/$', load_courses, name='ajax_load_courses'),
     url(r'^ajax/init_calendar/$', init_calendar, name='ajax_init_calendar'),
