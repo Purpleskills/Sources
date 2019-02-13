@@ -55,10 +55,10 @@ def schedule_courses(request):
             creator=request.user
         )
         CourseUserRelation.objects.create(user=request.user, course=course, event=event)
-        return HttpResponse("Success")
+        return HttpResponse(calendar_slug)
     except Exception as e:
         logging.getLogger('purpleskills').exception(msg="Course failed to schedule: " + "Course=" + str(course.id) + ";user=" + str(request.user.id) + "; msg=" + e.message)
-        return HttpResponse("Failed")
+        return HttpResponse("")
 
 
 from django.views.decorators.csrf import csrf_exempt

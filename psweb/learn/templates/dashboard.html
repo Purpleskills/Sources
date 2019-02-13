@@ -62,6 +62,7 @@
                 }
             });
         }
+        $('#calendar').fullCalendar( 'refetchEvents' );
     }
 
     $(document).ready(function() {
@@ -146,7 +147,7 @@
                     dataType: "text",
                     success: function (data) {
                         //alert("success");
-                        refresh_calendar('{{user.id}}');
+                        refresh_calendar('{{user.id}}', data);
                     },
                     error: function (erro) {
                         alert("Scheduler is not available. Please check back later.");
