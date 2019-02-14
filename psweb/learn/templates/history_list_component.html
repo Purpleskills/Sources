@@ -1,0 +1,16 @@
+{% for event in events %}
+    <form method="post" class="historyform" data-course="{{event.id}}" novalidate>
+        {% csrf_token %}
+        <div class="row justify-content-md-center">
+            <div class="col">{{event.title}}</div>
+            <div class="col">{{event.start}}</div>
+            <div class="col">{{event.end_recurring_period}}</div>
+            <div class="col-1">{{event.rule.frequency}}</div>
+            <div class="col"><label for="certupload"> Select the certificate file to upload</label>&nbsp;&nbsp;<input type="file" id="certupload"></div>
+            <div class="col"><span id="coursediv" class="course-rating" data-event="{{event.id}}"></span></div>
+            <div class="col"><textarea class="form-conrol" placeholder="add any feedback that you may have on this course." cols="50"></textarea></div>
+            <div class="col"><button type="submit" class="removebutton btn btn-dark" id="id_remove">Remove</button></div>
+        </div>
+        <hr class="g-brd-gray-light-v4" />
+    </form>
+{% endfor %}

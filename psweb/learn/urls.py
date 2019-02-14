@@ -12,4 +12,6 @@ urlpatterns = [
     url(r'^ajax/init_calendar/$', init_calendar, name='ajax_init_calendar'),
     url(r'^ajax/schedule_courses/$', schedule_courses, name='ajax_schedule_courses'),
     url(r'^ajax/rate/course/$', rate_courses, name='ajax_rate_courses'),
+    url(r'^ajax/remove/event/$', remove_event, name='ajax_remove_event'),
+    url(r'^ajax/load/history/$', load_history, name='ajax_load_history'),
 ]

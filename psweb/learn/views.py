@@ -60,6 +60,38 @@ def schedule_courses(request):
         logging.getLogger('purpleskills').exception(msg="Course failed to schedule: " + "Course=" + str(course.id) + ";user=" + str(request.user.id) + "; msg=" + e.message)
         return HttpResponse("")
 
+def load_history(request):
+    user = request.user
+    active_events = Event.objects.filter(creator=user)
+    if 0 == active_events.count():
+        return HttpResponse("")
+
+    return render(request, 'history_list_component.html', {'events': active_events})
+
+def remove_event(request):
+    user = request.user
+    try:
+        eventid = int(request.GET.get('eventid'))
+        try:
+            cur = CourseUserRelation.objects.get(user=user, event_id=eventid)
+            cur.delete()
+        except CourseUserRelation.DoesNotExist:
+            pass
+        event = Event.objects.get(pk=eventid, creator=user)
+        event.delete()
+
+        # calendar_slug = 'scheduled_cal_' + str(request.user.id)
+        active_events = Event.objects.filter ( creator=user )
+        if 0 == active_events.count():
+            return HttpResponse("")
+
+        return render(request, 'history_list_component.html', {'events': active_events})
+
+    except Exception as e:
+        logging.getLogger('purpleskills').exception(
+            msg="Failed to remove course schedule: " + "event=" + str(event.id) + ";user=" + str(
+                request.user.id) + "; msg=" + e.message)
+        return HttpResponse("fail")
 
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
@@ -103,7 +135,7 @@ class CourseFilterView (LoginRequiredMixin, View):
         GET = request.GET
         if 'term' in request.GET:
             term = request.GET['term']
-            data = Course.objects.filter(title__icontains=term).values_list('category', flat=True)
+            data = Course.objects.filter(title__icontains=term).values_list('title', flat=True)
             json = list(data)
             results = {'data': data}
 

@@ -6,13 +6,64 @@
 
 <script type="text/javascript">
 <!--
-$(document).ready(function() {
+
+function refresh_rating(){
     $('.course-rating').raty({
         click: function(score, evt) {
             $.post("{% url 'learn:ajax_rate_courses' %}", {
                                 event:  $(this).attr("data-event"),
                                 score: score
             });
+        }
+    });
+}
+
+function load_history(){
+    $.ajax({
+        url: '{% url 'learn:ajax_load_history' %}',
+        type: "GET",
+        data: { },
+        dataType: "text",
+        success: function (data) {
+            if (data == ""){
+                $("#course_div").html("<h3>Currently no scheduled courses.</h3>");
+            } else if (data == "fail") {
+                alert("Failed to load the course. Please try again.");
+            }else {
+                $("#course_div").html(data);
+                refresh_rating();
+            }
+        },
+        error: function (erro) {
+            alert("Unable to load the course at the moment. Please try refreshing the page.");
+        }
+    });
+}
+
+$(document).ready(function() {
+    load_history();
+});
+
+$(document).on('submit','.historyform', function(event){
+    event.preventDefault();
+    var eventid = $(this).attr("data-course");
+    $.ajax({
+        url: '{% url 'learn:ajax_remove_event' %}',
+        type: "GET",
+        data: { 'eventid': eventid },
+        dataType: "text",
+        success: function (data) {
+            if (data == ""){
+                $("#course_div").html("<h3>Currently no scheduled courses.</h3>");
+            } else if (data == "fail") {
+                alert("Failed to remove the course. Please try again.");
+            }else {
+                $("#course_div").html(data);
+                refresh_rating();
+            }
+        },
+        error: function (erro) {
+            alert("Unable to remove the course at the moment. Please try again.");
         }
     });
 });
@@ -22,38 +73,18 @@ $(document).ready(function() {
 
 {% block content %}
     <div class="container-fluid g-py-40 g-px-100">
-        <div class="row">
-            <div class="col">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Course</th>
-                            <th class="text-center">Started on</th>
-                            <th class="text-center">Date of completion</th>
-                            <th class="text-center">Frequency</th>
-                            <th class="text-center">Certificate</th>
-                            <th class="text-center">Rate this course</th>
-                            <th class="text-center">Feedback</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for event in object_list %}
-                        <form method="post" class="historyform" novalidate>
-                            {% csrf_token %}
-                            <tr>
-                                <td>{{event.title}}</td>
-                                <td>{{event.start}}</td>
-                                <td>{{event.end_recurring_period}}</td>
-                                <td>{{event.rule.frequency}}</td>
-                                <td><label for="certupload"> Select the certificate file to upload</label>&nbsp;&nbsp;<input type="file" id="certupload"></td>
-                                <td><span id="coursediv" class="course-rating" data-event="{{event.id}}"></span></td>
-                                <td><textarea class="form-conrol" placeholder="add any feedback that you may have on this course." cols="50"></textarea></td>
-                            </tr>
-                        </form>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="row justify-content-md-center">
+            <div class="col">Course</div>
+            <div class="col">Started on</div>
+            <div class="col">Date of completion</div>
+            <div class="col-1">Frequency</div>
+            <div class="col">Certificate</div>
+            <div class="col">Rate this course</div>
+            <div class="col">Feedback</div>
+            <div class="col"></div>
+        </div>
+        <hr class="g-brd-gray-light-v4" />
+        <div id="course_div">
         </div>
     </div>
 {% endblock content %}
