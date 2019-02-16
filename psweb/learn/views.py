@@ -9,20 +9,27 @@ from schedule.models import Calendar, Event, Rule
 from django.http import HttpResponse
 import math
 import logging
+import operator
+from django.db.models import Q
+from functools import reduce
 
 def load_courses(request):
-    topic = request.GET.get('topic')
-    difficulty = request.GET.get('difficulty')
-    provider = request.GET.get('provider')
-    courses = Course.objects.filter(status=True).order_by('title')
-    if topic != "":
-        courses = courses.filter(title__icontains=topic).order_by('title')
-    if difficulty != "" and difficulty != "DifficultyChoice.All":
-        courses = courses.filter(difficulty=difficulty).order_by('title')
-    if provider != "":
-        courses = courses.filter(provider__id=provider).order_by('title')
+    topics = request.GET.get('topic').split()
+    difficulty = int(request.GET.get('difficulty'))
+    provider = None
+    try:
+        provider = int(request.GET.get('provider'))
+    except Exception:
+        pass
+    courses = Course.objects.filter(status=1)
+    if len(topics) > 0:
+        courses = courses.filter(reduce(operator.and_, (Q(title__icontains=x) for x in topics)))
+    if difficulty != "" and difficulty != DifficultyChoice.All.value:
+        courses = courses.filter(difficulty=difficulty)
+    if provider:
+        courses = courses.filter(provider__id=provider)
 
-    return render(request, 'course_list_component.html', {'courses': courses})
+    return render(request, 'course_list_component.html', {'courses': courses.order_by('title')[:10]})
 
 
 def init_calendar(request):

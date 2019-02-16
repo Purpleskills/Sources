@@ -44,22 +44,28 @@ class UdemyImport(LoginRequiredMixin, TemplateView):
                         # data here is a list of dicts
 
                         for courseitem in results:
-                            defaults = { 'title' : courseitem['title'], 'url' : courseProvider.url + courseitem['url'],
-                                            'provider' : courseProvider, 'difficulty' : level[1].value, 'status' : 1,
-                                            'price' : courseitem['price_detail']['amount'],
-                                            'thumbnail' : courseitem['image_480x270'], 'duration' : timedelta(hours=duration[1]) }
+                            title = courseitem['title'] if 'title' in courseitem else None
+                            url = courseProvider.url + courseitem['url'] if 'url' in courseitem else None
+                            price = courseitem['price_detail']['amount'] if 'price_detail' in courseitem else None
+                            thumbnail = courseitem['image_480x270'] if 'image_480x270' in courseitem else None
 
-                            course, created = Course.objects.get_or_create(course_id=courseitem['id'], defaults=defaults)
-                            if created:
-                                course.save()
-                                course.tags.add(categorytag)
-                                # add instructors
-                                for instructor in courseitem['visible_instructors']:
-                                    defaults = {'url' : courseProvider.url + instructor['url'], 'photo' : instructor['image_100x100']}
-                                    newInstructor, created = Instructor.objects.get_or_create(name=instructor['name'], defaults = defaults)
-                                    if created:
-                                        newInstructor.save()
-                                    course.instructors.add(newInstructor)
+                            if title and url:
+                                defaults = { 'title' : title, 'url' : url, 'provider' : courseProvider,
+                                            'difficulty' : level[1].value, 'status' : 1,
+                                            'price' : price,
+                                            'thumbnail' : thumbnail, 'duration' : timedelta(hours=duration[1])}
+
+                                course, created = Course.objects.get_or_create(course_id=courseitem['id'], defaults=defaults)
+                                if created:
+                                    course.save()
+                                    course.tags.add(categorytag)
+                                    # add instructors
+                                    for instructor in courseitem['visible_instructors']:
+                                        defaults = {'url' : courseProvider.url + instructor['url'], 'photo' : instructor['image_100x100']}
+                                        newInstructor, created = Instructor.objects.get_or_create(name=instructor['name'], defaults = defaults)
+                                        if created:
+                                            newInstructor.save()
+                                        course.instructors.add(newInstructor)
                         if res['next']:
                             request = requests.request('GET', res['next'], headers=headers)
                         else:
@@ -95,3 +101,63 @@ c = HTTPSConnection("www.udemy.com", context=ssl._create_unverified_context())
 # conn.commit()
 # # Close the connection
 # conn.close()
+import csv
+import urllib3
+
+class PluralSightImport(LoginRequiredMixin, TemplateView):
+    levels = {}
+    levels[0] = {'fundamentals', 'beginner', 'introduction', 'meet', 'getting started', 'introduces', 'basics'}
+    levels[1] = {'advanced'}
+    ignore_words = {'team-foundation', 'team foundation'}
+
+    def computeDifficulty(self, courseId, courseTitle, courseDesc):
+        courseTitle = courseTitle.lower()
+        courseDesc = courseDesc.lower()
+        # first remove ignore words
+        for word_to_ignore in self.ignore_words:
+            courseId = courseId.replace(word_to_ignore, '')
+            courseTitle = courseTitle.replace(word_to_ignore, '')
+            courseDesc = courseDesc.replace(word_to_ignore, '')
+
+        courseId = courseId.split('-')
+        courseTitle = courseTitle.split()
+        courseDesc = courseDesc.split()
+
+        if len(self.levels[0].intersection(courseId)) > 0 or len(self.levels[0].intersection(courseTitle)) > 0:
+            return DifficultyChoice.Beginner.value
+
+        if len(self.levels[1].intersection(courseId)) > 0 or len(self.levels[1].intersection(courseTitle)) > 0:
+            return DifficultyChoice.Advanced.value
+
+        if len(self.levels[0].intersection(courseDesc)) > 0:
+            return DifficultyChoice.Beginner.value
+
+        if len(self.levels[1].intersection(courseDesc)) > 0:
+            return DifficultyChoice.Advanced.value
+
+        return DifficultyChoice.Intermediate.value
+
+    def get(self, request, *args, **kwargs):
+        courseProvider = CourseProvider.objects.get(name='PluralSight')
+        url = 'http://api.pluralsight.com/api-v0.9/courses'
+        http = urllib3.PoolManager()
+        response = http.request('GET', url)
+        cr = csv.reader(response.data.decode("utf-8").splitlines())
+        omittedFirstRow = False
+        for courseitem in cr:
+            if omittedFirstRow == False:
+                omittedFirstRow = True
+            else:
+                if courseitem[5] == 'Live':
+                    defaults = {'course_id': courseitem[0], 'title': courseitem[1], 'url': courseProvider.url + '/' + courseitem[0],
+                                'provider': courseProvider, 'difficulty': self.computeDifficulty(courseitem[0], courseitem[1], courseitem[4]), 'status': 1,
+                                'description': courseitem[4], 'duration': timedelta(seconds=int(courseitem[2]))}
+
+                    course, created = Course.objects.get_or_create(course_id=courseitem[0], defaults=defaults)
+                    if created:
+                        course.save()
+
+        return HttpResponse("Success")
+
+
+# https://api.coursera.org/api/courses.v1?start=0&limit=3&includes=instructorIds,partnerIds,specializations,s12nlds,v1Details,v2Details,instructors.v1(title)&fields=instructorIds,partnerIds,specializations,s12nlds,description,display,photoUrl,description,v1Details,v2Details,instructors.v1(title),totalDuration
