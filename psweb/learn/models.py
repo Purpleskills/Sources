@@ -7,10 +7,10 @@ from model_utils.fields import StatusField
 from model_utils import Choices
 
 class DifficultyChoice(Enum):
-    Beginner = "Beginner"
-    Intermediate = "Intermediate"
-    Advanced = "Advanced"
-    All = "All"
+    All = 0
+    Beginner = 1
+    Intermediate = 2
+    Advanced = 3
 
 class CourseStatus(Enum):
     Active = "Active"
@@ -50,8 +50,8 @@ class Course(models.Model):
     url = models.URLField()
     title = models.CharField(max_length=256)
     description = models.TextField(null=True)
-    status = models.SmallIntegerField(null=True)
-    difficulty = models.CharField( max_length=16, choices=[(tag, tag.value) for tag in DifficultyChoice], null=True)
+    status = models.SmallIntegerField(default=1)
+    difficulty = models.SmallIntegerField(choices=[(tag, tag.value) for tag in DifficultyChoice])
     duration = models.DurationField(null=True)
     provider = models.ForeignKey(CourseProvider, on_delete=models.PROTECT, null=True)
     thumbnail = models.URLField(null=True, default=None, blank=True)
