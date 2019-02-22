@@ -9,6 +9,9 @@
 
 function refresh_rating(){
     $('.course-rating').raty({
+        score: function() {
+            return $(this).attr('data-rating');
+        },
         click: function(score, evt) {
             $.post("{% url 'learn:ajax_rate_courses' %}", {
                                 event:  $(this).attr("data-event"),
@@ -44,11 +47,11 @@ $(document).ready(function() {
     load_history();
 });
 
-$(document).on('submit','.historyform', function(event){
+$(document).on('click','.completebutton', function() {
     event.preventDefault();
     var eventid = $(this).attr("data-course");
     $.ajax({
-        url: '{% url 'learn:ajax_remove_event' %}',
+        url: '{% url 'learn:ajax_complete_event' %}',
         type: "GET",
         data: { 'eventid': eventid },
         dataType: "text",
@@ -67,6 +70,31 @@ $(document).on('submit','.historyform', function(event){
         }
     });
 });
+
+// $(document).on('submit','.historyform', function(event){
+$(document).on('click','.removebutton', function() {
+    event.preventDefault();
+    var eventid = $(this).attr("data-course");
+    /*$.ajax({
+        url: '{% url 'learn:ajax_remove_event' %}',
+        type: "GET",
+        data: { 'eventid': eventid },
+        dataType: "text",
+        success: function (data) {
+            if (data == ""){
+                $("#course_div").html("<h3>Currently no scheduled courses.</h3>");
+            } else if (data == "fail") {
+                alert("Failed to remove the course. Please try again.");
+            }else {
+                $("#course_div").html(data);
+                refresh_rating();
+            }
+        },
+        error: function (erro) {
+            alert("Unable to remove the course at the moment. Please try again.");
+        }
+    });*/
+});
 //-->
 </script>
 {% endblock extra_js %}
@@ -81,6 +109,7 @@ $(document).on('submit','.historyform', function(event){
             <div class="col">Certificate</div>
             <div class="col">Rate this course</div>
             <div class="col">Feedback</div>
+            <div class="col"></div>
             <div class="col"></div>
         </div>
         <hr class="g-brd-gray-light-v4" />

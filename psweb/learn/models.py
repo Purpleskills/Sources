@@ -3,12 +3,18 @@ from django.conf import settings
 from djmoney.models.fields import MoneyField
 from enum import Enum
 from schedule.models import Event
+from model_utils.fields import StatusField
+from model_utils import Choices
 
 class DifficultyChoice(Enum):
     Beginner = "Beginner"
     Intermediate = "Intermediate"
     Advanced = "Advanced"
     All = "All"
+
+class CourseStatus(Enum):
+    Active = "Active"
+    Complete = "Complete"
 
 LOGO_UPLOAD_TO = getattr(settings, 'LOGO_UPLOAD_TO', 'logo/')
 
@@ -54,10 +60,16 @@ class Course(models.Model):
     tags = models.ManyToManyField(CourseTag)
 
 class CourseUserRelation(models.Model):
+    STATUS = Choices('Active', 'Complete')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
     rating = models.SmallIntegerField(null=True)
     feedback = models.TextField(null=True)
+    status = StatusField()
+
+    @property
+    def is_complete(self):
+        return self.status == "Complete"
 
 

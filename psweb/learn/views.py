@@ -54,7 +54,8 @@ def schedule_courses(request):
             end_recurring_period=until,
             creator=request.user
         )
-        CourseUserRelation.objects.create(user=request.user, course=course, event=event)
+        cur = CourseUserRelation(user=request.user, course=course, event=event, status="Active")
+        cur.save()
         return HttpResponse(calendar_slug)
     except Exception as e:
         logging.getLogger('purpleskills').exception(msg="Course failed to schedule: " + "Course=" + str(course.id) + ";user=" + str(request.user.id) + "; msg=" + e.message)
@@ -92,6 +93,31 @@ def remove_event(request):
             msg="Failed to remove course schedule: " + "event=" + str(event.id) + ";user=" + str(
                 request.user.id) + "; msg=" + e.message)
         return HttpResponse("fail")
+
+def complete_event(request):
+    user = request.user
+    try:
+        eventid = int(request.GET.get('eventid'))
+        try:
+            cur = CourseUserRelation.objects.get(user=user, event_id=eventid)
+            cur.status="Complete"
+            cur.save()
+        except CourseUserRelation.DoesNotExist:
+            pass
+
+        # calendar_slug = 'scheduled_cal_' + str(request.user.id)
+        active_events = Event.objects.filter ( creator=user )
+        if 0 == active_events.count():
+            return HttpResponse("")
+
+        return render(request, 'history_list_component.html', {'events': active_events})
+
+    except Exception as e:
+        logging.getLogger('purpleskills').exception(
+            msg="Failed to remove course schedule: " + "event=" + str(eventid) + ";user=" + str(
+                request.user.id) + "; msg=" + e.message)
+        return HttpResponse("fail")
+
 
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt

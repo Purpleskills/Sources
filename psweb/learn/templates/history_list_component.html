@@ -1,5 +1,5 @@
 {% for event in events %}
-    <form method="post" class="historyform" data-course="{{event.id}}" novalidate>
+    <form method="post" class="historyform" novalidate>
         {% csrf_token %}
         <div class="row justify-content-md-center">
             <div class="col">{{event.title}}</div>
@@ -7,9 +7,18 @@
             <div class="col">{{event.end_recurring_period}}</div>
             <div class="col-1">{{event.rule.frequency}}</div>
             <div class="col"><label for="certupload"> Select the certificate file to upload</label>&nbsp;&nbsp;<input type="file" id="certupload"></div>
-            <div class="col"><span id="coursediv" class="course-rating" data-event="{{event.id}}"></span></div>
+            <div class="col"><span id="coursediv" class="course-rating" data-event="{{event.id}}" data-rating="{{event.courseuserrelation_set.first.rating}}"></span></div>
             <div class="col"><textarea class="form-conrol" placeholder="add any feedback that you may have on this course." cols="50"></textarea></div>
-            <div class="col"><button type="submit" class="removebutton btn btn-dark" id="id_remove">Remove</button></div>
+            <div class="col">
+                {% if event.courseuserrelation_set.first.is_complete %}
+                    <i class="icon-check g-color-red g-pos-rel g-top-1 g-mr-5"></i> <strong class="g-color-green">Completed</strong>
+                {% else %}
+                    <button type="submit" class="completebutton btn btn-success g-mr-20" name="complete" id="id_complete" data-course="{{event.id}}">Mark as Done</button>
+                {% endif %}
+            </div>
+            <div class="col">
+                <button type="submit" class="removebutton btn btn-dark" name="remove" id="id_remove" data-course="{{event.id}}">Remove</button>
+            </div>
         </div>
         <hr class="g-brd-gray-light-v4" />
     </form>
