@@ -15,6 +15,11 @@ class DifficultyChoice(Enum):
 class CourseStatus(Enum):
     Active = "Active"
     Complete = "Complete"
+class Duration(Enum):
+    Short = ('short', 2)
+    Medium = ('medium', 5)
+    Long = ('long', 12)
+    ExtraLong = ('extraLong', 22)
 
 LOGO_UPLOAD_TO = getattr(settings, 'LOGO_UPLOAD_TO', 'logo/')
 

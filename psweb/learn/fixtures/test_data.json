@@ -2,6 +2,7 @@
     { "pk": 1, "model": "learn.CourseProvider", "fields": {"name": "Udemy", "status": 1, "logo": "/media/logo/udemy_logo.svg", "url": "https://www.udemy.com" }  },
     { "pk": 2, "model": "learn.CourseProvider", "fields": {"name": "Lynda", "status": 1, "logo": "/media/logo/lynda-linkedin-logo.jpg", "url": "https://www.lynda.com"}  },
     { "pk": 3, "model": "learn.CourseProvider", "fields": {"name": "PluralSight", "status": 1, "logo": "/media/logo/pluralsight_logo.png", "url": "https://www.pluralsight.com/courses"}  },
+    { "pk": 4, "model": "learn.CourseProvider", "fields": {"name": "Coursera", "status": 1, "logo": "/media/logo/coursera_logo.svg", "url": "https://www.coursera.org/learn"}  },
 
 
     {

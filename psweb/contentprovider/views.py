@@ -6,10 +6,12 @@ from http.client import HTTPSConnection
 from django.http import HttpResponse
 from base64 import b64encode
 from .models import *
-from learn.models import Course, CourseTag, CourseProvider, DifficultyChoice, Instructor
+from learn.models import Course, CourseTag, CourseProvider, DifficultyChoice, Instructor, Duration
 import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from datetime import timedelta
+from django.utils import timezone
+from django.db.models.base import ObjectDoesNotExist
 
 userAndPass = b64encode(b"GpxNVedkBslJE6CTga0f56iRG4vzzmYU24gzH0g5:FGMx5x8Vjr7LyBokikzIT9t4uFSSa30HMhMGcEHZBy38FV2snjwew0l9o3ctugs1KRcIvBQyZDidYKuMKrWUGHCA0qRNYMvFg859QhpatbpBPZW3QNAeJzpHBAYNkBoy").decode("ascii")
 headers = { 'Authorization' : 'Basic %s' %  userAndPass }
@@ -24,36 +26,46 @@ class UdemyImport(LoginRequiredMixin, TemplateView):
             if created:
                 categorytag.save()
             for level in [('beginner', DifficultyChoice.Beginner), ('intermediate', DifficultyChoice.Intermediate), ('expert', DifficultyChoice.Advanced)]:
-                for duration in [('short', 2), ('medium', 5), ('long', 12), ('extraLong', 22),]:
-                    payload = {'category': category.title, 'instructional_level': level[0], 'page_size': 1000,
-                               'duration': duration[0]}
-                    request = requests.request('GET', 'https://www.udemy.com/api-2.0/courses', params=payload,
-                                               headers=headers)
+                for duration in Duration:
+                    payload = {'category': category.title, 'instructional_level': level[0], 'page_size': 10000,
+                               'duration': duration.value[0]}
+                    page = 0
+                    res = None
                     while True:
-                        # c.request('GET', '/api-2.0/courses?page_size=10', headers=headers)
-                        # get the response back
-                        res = request.json()
-                        # at this point you could check the status etc
-                        # this gets the page text
-                        # data = res.read()
+                        rawdata, created = UdemyRawData.objects.get_or_create(category=category, level=level[1].value,
+                                                                              duration=duration.value[1], page=page)
+                        if created or rawdata.raw_data == None or rawdata.raw_data == '':
+                            if res:
+                                if 'next' in res and res['next']:
+                                    request = requests.request('GET', res['next'], headers=headers)
+                                else:
+                                    break
+                            else:
+                                request = requests.request('GET', 'https://www.udemy.com/api-2.0/courses', params=payload,
+                                                       headers=headers)
+                            res = request.json()
+                            rawdata.raw_data = json.dumps(res)
+                            rawdata.save()
+                        else:
+                            res = json.loads(rawdata.raw_data)
 
-                        # str_data = data.decode('utf8')
-                        # json_data = json.loads(str_data)
                         results = res['results']
-                        # print (results)
-                        # data here is a list of dicts
 
                         for courseitem in results:
                             title = courseitem['title'] if 'title' in courseitem else None
                             url = courseProvider.url + courseitem['url'] if 'url' in courseitem else None
-                            price = courseitem['price_detail']['amount'] if 'price_detail' in courseitem else None
+                            try:
+                                price = courseitem['price_detail']['amount']
+                            except Exception as e:
+                                price = 0
+
                             thumbnail = courseitem['image_480x270'] if 'image_480x270' in courseitem else None
 
                             if title and url:
                                 defaults = { 'title' : title, 'url' : url, 'provider' : courseProvider,
                                             'difficulty' : level[1].value, 'status' : 1,
                                             'price' : price,
-                                            'thumbnail' : thumbnail, 'duration' : timedelta(hours=duration[1])}
+                                            'thumbnail' : thumbnail, 'duration' : timedelta(hours=duration.value[1])}
 
                                 course, created = Course.objects.get_or_create(course_id=courseitem['id'], defaults=defaults)
                                 if created:
@@ -66,10 +78,9 @@ class UdemyImport(LoginRequiredMixin, TemplateView):
                                         if created:
                                             newInstructor.save()
                                         course.instructors.add(newInstructor)
-                        if res['next']:
-                            request = requests.request('GET', res['next'], headers=headers)
-                        else:
-                            break
+                        rawdata.processed = timezone.now()
+                        rawdata.save()
+                        page += 1
 
         return HttpResponse("Success")
 
@@ -148,7 +159,7 @@ class PluralSightImport(LoginRequiredMixin, TemplateView):
             if omittedFirstRow == False:
                 omittedFirstRow = True
             else:
-                if courseitem[5] == 'Live':
+                if courseitem[6] == 'no':
                     defaults = {'course_id': courseitem[0], 'title': courseitem[1], 'url': courseProvider.url + '/' + courseitem[0],
                                 'provider': courseProvider, 'difficulty': self.computeDifficulty(courseitem[0], courseitem[1], courseitem[4]), 'status': 1,
                                 'description': courseitem[4], 'duration': timedelta(seconds=int(courseitem[2]))}
@@ -160,4 +171,166 @@ class PluralSightImport(LoginRequiredMixin, TemplateView):
         return HttpResponse("Success")
 
 
-# https://api.coursera.org/api/courses.v1?start=0&limit=3&includes=instructorIds,partnerIds,specializations,s12nlds,v1Details,v2Details,instructors.v1(title)&fields=instructorIds,partnerIds,specializations,s12nlds,description,display,photoUrl,description,v1Details,v2Details,instructors.v1(title),totalDuration
+# https://api.coursera.org/api/courses.v1?start=0&limit=3&includes=instructorIds,partnerIds,specializations,s12nlds,v1Details,v2Details,instructors.v1,courseDerivativesV2,difficultyLevelTag&fields=instructorIds,partnerIds,specializations,s12nlds,description,display,photoUrl,description,v1Details,v2Details,instructors.v1(title),workload,domainTypes,categories
+from html.parser import HTMLParser
+import re
+class CourseraImport(LoginRequiredMixin, TemplateView):
+    course_difficulty = None
+
+    class CourseraHTMLParser(HTMLParser):
+        grab_course_data = False
+        course_duration = None
+
+        def handle_starttag(self, tag, attrs):
+            if tag == 'script':
+                attr_type = [v for i, v in enumerate(attrs) if v[0] == 'type']
+                if len(attr_type) > 0 and attr_type[0][1] == 'application/ld+json':
+                    self.grab_course_data = True
+
+        def handle_endtag(self, tag):
+            self.grab_course_data = False
+
+        def handle_data(self, data):
+            if self.grab_course_data == True:
+                self.calc_course_props(data)
+
+        def calc_course_props(self, data):
+            json_data = json.loads(data)
+            course_data = json_data['@graph'][2]
+            time_data_matches = re.match("P((\d+)D)?(T((\d+)H)?((\d+)M)?)?", course_data['timeRequired'])
+            total_secs = 0
+            try:
+                if time_data_matches.group(2):
+                    total_secs += int(time_data_matches.group(2)) * 3600 * 24
+                if time_data_matches.group(5):
+                    total_secs += int(time_data_matches.group(5)) * 3600
+                if time_data_matches.group(7):
+                    total_secs += int(time_data_matches.group(7)) * 60
+            except Exception as e:
+                if total_secs > 0:
+                    pass
+                else:
+                    raise
+            self.course_duration = timedelta(seconds= total_secs)
+            assert (total_secs > 0)
+
+
+    def get(self, request, *args, **kwargs):
+        courseProvider = CourseProvider.objects.get(name='Coursera')
+        url = 'https://api.coursera.org/api/courses.v1?start=0&limit=10&includes=instructorIds,partnerIds,specializations,s12nlds,v1Details,v2Details,instructors.v1(title)&fields=instructorIds,partnerIds,specializations,s12nlds,description,display,photoUrl,description,v1Details,v2Details,instructors.v1(title)'
+        http = urllib3.PoolManager()
+        response = http.request('GET', url)
+        while True:
+            # first parse the instructors
+            json_data = json.loads(response.data.decode("utf-8"))
+            for instructor in json_data['linked']['instructors.v1']:
+                newInstructor, created = Instructor.objects.get_or_create(name=instructor['fullName'])
+                if created:
+                    newInstructor.save()
+
+            for courseitem in json_data['elements']:
+                try:
+                    Course.objects.get(course_id=courseitem['id'])
+                except Course.DoesNotExist:
+                    course_url = courseProvider.url + '/' + courseitem['slug']
+                    course_data, created = CourseraRawData.objects.get_or_create(course_id=courseitem['id'])
+                    if created or course_data.raw_data in [None, '']:
+                        # get course details
+                        response = http.request('GET', course_url)
+                        raw_data = response.data.decode("utf-8")
+                        course_data.raw_data = raw_data
+                        course_data.retrieved = timezone.now()
+                        course_data.save()
+                    raw_data = course_data.raw_data
+
+                    parser = self.CourseraHTMLParser()
+                    parser.feed(raw_data)
+                    self.course_difficulty = DifficultyChoice.Intermediate.value
+                    try:
+                        course_difficulty_str = re.search('\"level\":(\")?(\w+)',raw_data).group(2).lower()
+                        if (course_difficulty_str == "beginner"):
+                            self.course_difficulty = DifficultyChoice.Beginner.value
+                        elif (course_difficulty_str == "intermediate"):
+                            self.course_difficulty = DifficultyChoice.Intermediate.value
+                        elif (course_difficulty_str == "advanced"):
+                            self.course_difficulty = DifficultyChoice.Advanced.value
+                    except Exception as e:
+                        pass
+
+                    course = Course(course_id=courseitem['id'], title = courseitem['name'], url = course_url,
+                                provider = courseProvider, status = 1, description = courseitem['description'],
+                                difficulty = self.course_difficulty, duration = parser.course_duration)
+                    course.save()
+                    # add course tagss
+                    course_data.processed = timezone.now()
+                    course_data.save()
+
+            if 'next' in json_data['paging'] and json_data['paging']['next'] != None:
+                url = 'https://api.coursera.org/api/courses.v1?limit=5000&includes=instructorIds,partnerIds,specializations,s12nlds,v1Details,v2Details,instructors.v1(title)&fields=instructorIds,partnerIds,specializations,s12nlds,description,display,photoUrl,description,v1Details,v2Details,instructors.v1(title)' + '&start=' + json_data['paging']['next']
+                http = urllib3.PoolManager()
+                response = http.request('GET', url)
+            else:
+                break
+        return HttpResponse("Success")
+
+
+
+import zipfile
+import io
+class LyndaImport(LoginRequiredMixin, TemplateView):
+    def computeCourseDifficulty(self, level_str):
+        if (level_str == 'Beginner'):
+            return DifficultyChoice.Beginner.value
+        elif (level_str == 'Intermediate'):
+            return DifficultyChoice.Intermediate.value
+        elif (level_str == 'Intermediate'):
+            return DifficultyChoice.Intermediate.value
+        else:
+            return DifficultyChoice.Intermediate.value
+
+    def computeDuration(self, duration_str):
+        time_strs = duration_str.split(":")
+        return int(time_strs[0]) * 3600 + int(time_strs[1]) * 60 + int(time_strs[2])
+
+    def get(self, request, *args, **kwargs):
+        courseProvider = CourseProvider.objects.get(name='Lynda')
+        lyndaData = LyndaRawData.objects.all()
+        if lyndaData.count() > 0:
+            lyndaData = lyndaData.first()
+            raw_data = lyndaData.raw_data
+        else:
+            url = 'http://www.lynda.com/courselist/'
+            http = urllib3.PoolManager()
+            response = http.request('GET', url)
+            raw_data = response.data
+            lyndaData = LyndaRawData(raw_data=raw_data)
+            lyndaData.save()
+
+        with zipfile.ZipFile(io.BytesIO(raw_data)) as lyndazip:
+            cr = csv.reader(io.TextIOWrapper(lyndazip.open('lynda.com Courses.csv'), encoding='utf-8').read().splitlines())
+            omittedFirstRow = False
+            for courseitem in cr:
+                if omittedFirstRow == False:
+                    omittedFirstRow = True
+                else:
+                    if courseitem[16] == 'active':
+                        defaults = {'course_id': courseitem[0], 'title': courseitem[1],
+                                    'url': courseitem[10],
+                                    'provider': courseProvider,
+                                    'difficulty': self.computeCourseDifficulty(courseitem[4]),
+                                    'status': 1,
+                                    'description': courseitem[9],
+                                    'thumbnail': courseitem[15],
+                                    'duration': timedelta(seconds=self.computeDuration(courseitem[5]))}
+
+                        course, created = Course.objects.get_or_create(course_id=courseitem[0], defaults=defaults)
+                        if created:
+                            course.save()
+                            for instructor in courseitem[2].split(','):
+                                newInstructor, created = Instructor.objects.get_or_create(name=instructor)
+                                if created:
+                                    newInstructor.save()
+                                course.instructors.add(newInstructor)
+        lyndaData.processed = timezone.now()
+        lyndaData.save()
+        return HttpResponse("Success")
