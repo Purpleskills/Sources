@@ -62,10 +62,12 @@ INSTALLED_APPS = (
     'crispy_forms',
     'djmoney',
     'schedule',
+    'jchart',
     'psweb',
     'home',
     'psauth',
     'learn',
+    'mgmt',
     'contentprovider',
 )
 

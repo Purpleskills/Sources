@@ -6,3 +6,4 @@ django-crispy-forms==1.7.2
 django-scheduler==0.8.8
 django-money
 django-model-utils==3.1.2
+django_jchart

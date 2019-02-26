@@ -65,7 +65,7 @@ def schedule_courses(request):
         cur.save()
         return HttpResponse(calendar_slug)
     except Exception as e:
-        logging.getLogger('purpleskills').exception(msg="Course failed to schedule: " + "Course=" + str(course.id) + ";user=" + str(request.user.id) + "; msg=" + e.message)
+        logging.getLogger('purpleskills').exception(msg="Course failed to schedule: " + "Course=" + str(course.id) + ";user=" + str(request.user.id) + "; msg=" + str(e))
         return HttpResponse("")
 
 def load_history(request):

@@ -1,0 +1,13 @@
+{% extends "homebase.html" %}
+{% load staticfiles %}
+{% block title %} HR Dashboard {% endblock %}
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>
+{% endblock extra_js %}
+{% block content %}
+    <div class="container-fluid g-py-40 g-px-100">
+        <div id="course_chart" style="width:500px;">
+            {{ bar_chart.as_html }}
+        </div>
+    </div>
+{% endblock content %}

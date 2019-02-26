@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^home/', include('home.urls', namespace='home')),
     url(r'^learn/', include('learn.urls', namespace='learn')),
     url(r'^auth/', include('psauth.urls', namespace='auth')),
+    url(r'^mgmt/', include('mgmt.urls', namespace='mgmt')),
     url(r'^schedule/', include('schedule.urls')),
     url(r'^contentprovider/', include('contentprovider.urls')),
     url(r'^fullcalendar/', TemplateView.as_view(template_name="fullcalendar.html"), name='fullcalendar'),
