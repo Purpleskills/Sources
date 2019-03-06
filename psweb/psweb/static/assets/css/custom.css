@@ -1,1 +1,11 @@
 /* Add here all your css styles (customizations) */
+.g-bg-lightmoss {
+  background-color: #d1e8e2 !important; }
+
+.g-bg-lightmoss-radialgradient-ellipse {
+  background-image: radial-gradient(ellipse farthest-corner at 50% 50%, #fff 22%, #d1e8e2);
+  background-repeat: no-repeat; }
+
+.lightmoss-background { background-color:#d1e8e2; }
+
+.buttonface-dark {color: #2c3531}

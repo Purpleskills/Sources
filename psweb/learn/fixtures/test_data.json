@@ -12,5 +12,12 @@
             "logo": "/media/company/federarion_logo.png",
             "name": "Federation"
         }
-    }
+    },
+
+    { "pk": 1, "model": "psauth.department", "fields": { "name": "Product development" } },
+    { "pk": 2, "model": "psauth.department", "fields": { "name": "HR" } },
+    { "pk": 3, "model": "psauth.department", "fields": { "name": "International" } },
+    { "pk": 4, "model": "psauth.department", "fields": { "name": "R&D" } },
+    { "pk": 5, "model": "psauth.department", "fields": { "name": "Support" } }
+
 ]

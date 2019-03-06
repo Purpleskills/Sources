@@ -5,12 +5,7 @@ from enum import Enum
 from schedule.models import Event
 from model_utils.fields import StatusField
 from model_utils import Choices
-
-class DifficultyChoice(Enum):
-    All = 0
-    Beginner = 1
-    Intermediate = 2
-    Advanced = 3
+from core.models import DifficultyChoice
 
 class CourseStatus(Enum):
     Active = "Active"

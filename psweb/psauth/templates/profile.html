@@ -1,0 +1,43 @@
+{% extends "homebase.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %} User Settings {% endblock %}
+
+{% block content %}
+    <div class="container g-py-40 g-px-100">
+        <h2>Profile</h2>
+        <h4>Name: {{user.first_name}} {{user.last_name}}</h4>
+        <h4>Department: {{ user.department.name }}</h4>
+        <p></p>
+        <h4>You can select upto 3 skill goals and the desired difficulty levels.</h4>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-6">
+                    {{ form.goal_1|as_crispy_field }}
+                </div>
+                <div class="col-3">
+                    {{ form.level_1|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    {{ form.goal_2|as_crispy_field }}
+                </div>
+                <div class="col-3">
+                    {{ form.level_2|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    {{ form.goal_3|as_crispy_field }}
+                </div>
+                <div class="col-3">
+                    {{ form.level_3|as_crispy_field }}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-dark">Save</button>
+        </form>
+    </div>
+{% endblock content %}

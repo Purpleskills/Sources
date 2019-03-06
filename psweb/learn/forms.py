@@ -1,5 +1,6 @@
 from django import forms
 from .models import *
+from core.models import DifficultyChoice
 
 class CourseFilterForm(forms.Form):
     class Meta:

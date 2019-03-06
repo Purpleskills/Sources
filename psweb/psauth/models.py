@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator,MinLengthValidator,MaxLengthValidator
 from django.conf import settings
 from django.contrib.auth.models import Group, AbstractUser
-
+from core.models import DifficultyChoice
 
 class Company(models.Model):
     id = models.AutoField(primary_key=True)
@@ -18,7 +18,7 @@ class Department(models.Model):
 
 class CourseUser(AbstractUser):
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
-    department = models.ForeignKey(Department, on_delete=models.PROTECT)
+    department = models.ForeignKey(Department, on_delete=models.PROTECT, null=True, blank=True, default = None)
     gender = models.CharField(max_length=1, null=True)
     phone = models.CharField(
                 max_length=15, validators=[
@@ -26,3 +26,8 @@ class CourseUser(AbstractUser):
                     MinLengthValidator(9),
                     MaxLengthValidator(15),
                 ], null=True, blank=True, default = None)
+
+class UserGoals(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    skill_goal = models.CharField(max_length=60)
+    difficulty = models.SmallIntegerField(choices=[(tag, tag.value) for tag in DifficultyChoice])

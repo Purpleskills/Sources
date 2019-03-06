@@ -64,6 +64,7 @@ INSTALLED_APPS = (
     'schedule',
     'jchart',
     'psweb',
+    'core',
     'home',
     'psauth',
     'learn',
