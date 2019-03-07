@@ -6,8 +6,54 @@
 {% endblock extra_js %}
 {% block content %}
     <div class="container-fluid g-py-40 g-px-100">
-        <div id="course_chart" style="width:500px;">
-            {{ bar_chart.as_html }}
+        <div class="row g-py-40">
+            <div class="col">
+                <h4>Training distribution for the current year</h4>
+                <div id="course_chart" style="width:600px;">
+                    {{ bar_chart.as_html }}
+                </div>
+            </div>
+            <div class="col">
+                <h4>Training cost (INR) per department</h4>
+                <div id="dept_chart" style="width:350px;">
+                    {{ pie_chart.as_html }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <h4>Goals scoreboard</h4>
+                <div class="row">
+                    <div class="col">Goal</div>
+                    <div class="col">Participants</div>
+                    <div class="col-1">Hours</div>
+                    <div class="col-2">Cost (INR)</div>
+                </div>
+                <div class="row">
+                    <div class="col">AI and Machine Learning - Beginner</div>
+                    <div class="col">56</div>
+                    <div class="col-1">1200</div>
+                    <div class="col-2">128900</div>
+                </div>
+                <div class="row">
+                    <div class="col">Advanced Java Programming - Expert</div>
+                    <div class="col">127</div>
+                    <div class="col-1">4600</div>
+                    <div class="col-2">341990</div>
+                </div>
+                <div class="row">
+                    <div class="col">Devops - Beginner</div>
+                    <div class="col">255</div>
+                    <div class="col-1">3200</div>
+                    <div class="col-2">789965</div>
+                </div>
+                <div class="row">
+                    <div class="col">Devops - Intermediate</div>
+                    <div class="col">108</div>
+                    <div class="col-1">3400</div>
+                    <div class="col-2">2549965</div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock content %}

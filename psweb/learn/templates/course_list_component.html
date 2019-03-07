@@ -18,10 +18,10 @@
                             <span><i class="icon-clock g-pos-rel g-top-1 g-color-blue g-mr-5"></i>Duration - {{course.duration}} </span>
                         </li>
                         <li class="list-inline-item g-mr-30">
-                            <span><i class="icon-shield g-pos-rel g-top-1 g-color-blue g-mr-5"></i>{{course.difficulty}}</span>
+                            <span><i class="icon-shield g-pos-rel g-top-1 g-color-blue g-mr-5"></i>{{course.GetDifficultyName}}</span>
                         </li>
                         <li class="list-inline-item g-mr-30">
-                            {%if course.tags%}
+                            {%if course.tags != "learn.CourseTag.None" %}
                                 <i class="icon-paper-clip g-pos-rel g-top-1 g-color-blue g-mr-5"></i> {{course.tags}}
                             {%endif%}
                         </li>

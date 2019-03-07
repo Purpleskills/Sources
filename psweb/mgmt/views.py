@@ -2,6 +2,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from jchart import Chart
 from jchart.config import Axes, DataSet, rgba
+from psauth.models import Department
 from schedule.models import Calendar, Event, Rule
 from django.db.models.functions import TruncMonth, ExtractMonth
 from django.db.models import Count
@@ -11,14 +12,17 @@ class PieChart(Chart):
     chart_type = 'pie'
 
     def get_labels(self, **kwargs):
-        return ['Red', 'Blue','yellow']
+        depts = list(Department.objects.values_list('name', flat=True))
+        return depts
 
     def get_datasets(self, **kwargs):
-        data = [69, 30, 45, 60, 55]
+        data = [4900000, 1107890, 1054900, 2787600, 1503300]
         colors = [
-            "#FF6384",
-            "#36A2EB",
-            "#FFCE56"
+            "#116466",
+            "#D9B08C",
+            "#FFCB9A",
+            "#D1E8E2",
+            "#AC3B61"
         ]
         return [DataSet(data=data,
                         label="My Pie Data",
@@ -40,7 +44,7 @@ class BarChart (Chart):
         this_year = datetime.datetime.today().year
 
         data = [0 for i in range(12)]
-        colors = [rgba(255, 99, 132, 0.2) for i in range(12)]
+        colors = [rgba(172, 59, 97, 1) for i in range(12)]
         events = Event.objects.filter(start__year = this_year)\
             .annotate(month=ExtractMonth('start'))\
             .values('month').annotate(c=Count('id'))\
@@ -48,7 +52,7 @@ class BarChart (Chart):
         for event in events:
             data[event['month']] = event['c']
 
-        return [DataSet(label='Event count per month',
+        return [DataSet(label='Scheduled training count per month',
                         data=data,
                         borderWidth=1,
                         backgroundColor=colors,
@@ -61,6 +65,6 @@ class ManagerDashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ManagerDashboardView, self).get_context_data(**kwargs)
 
-        # context["pie_chart"] = PieChart()
+        context["pie_chart"] = PieChart()
         context["bar_chart"] = BarChart()
         return context

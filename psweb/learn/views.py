@@ -6,6 +6,7 @@ import datetime
 from datetime import timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from schedule.models import Calendar, Event, Rule
+from psauth.models import UserGoals
 from django.http import HttpResponse
 import math
 import logging
@@ -140,13 +141,12 @@ class DashBoardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
     form_class = CourseFilterForm
 
+    def get_context_data(self, **kwargs):
+        context = super(DashBoardView, self).get_context_data(**kwargs)
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(DashBoardView, self).get_context_data(**kwargs)
-    #
-    #     courses = Course.objects.filter(status=1)
-    #     context["courses"] = courses
-    #     return context
+        ugs = UserGoals.objects.filter(user=self.request.user)
+        context["goals"] = ugs
+        return context
 
     def get(self, request, *args, **kwargs):
         form = CourseFilterForm()

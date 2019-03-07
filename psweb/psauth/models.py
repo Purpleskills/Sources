@@ -28,6 +28,13 @@ class CourseUser(AbstractUser):
                 ], null=True, blank=True, default = None)
 
 class UserGoals(models.Model):
+    def GetDifficultyName(self):
+        return {
+            1: "Beginner",
+            2: "Intermediate",
+            3: "Advanced"
+        }.get(self.difficulty, "For Everyone")
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     skill_goal = models.CharField(max_length=60)
     difficulty = models.SmallIntegerField(choices=[(tag, tag.value) for tag in DifficultyChoice])

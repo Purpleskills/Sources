@@ -46,6 +46,13 @@ class Course(models.Model):
     def GetThumbFilename(self, filename):
         return 'courses/' + filename + "_" + str(self.id)
 
+    def GetDifficultyName(self):
+        return {
+            1: "Beginner",
+            2: "Intermediate",
+            3: "Advanced"
+        }.get(self.difficulty, "For Everyone")
+
     course_id = models.TextField()
     url = models.URLField()
     title = models.CharField(max_length=256)
@@ -58,6 +65,7 @@ class Course(models.Model):
     price = MoneyField(max_digits=8, decimal_places=2, default_currency='INR', null=True, default=None, blank=True)
     instructors = models.ManyToManyField(Instructor)
     tags = models.ManyToManyField(CourseTag)
+
 
 class CourseUserRelation(models.Model):
     STATUS = Choices('Active', 'Complete')
