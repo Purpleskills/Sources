@@ -7,6 +7,12 @@ from model_utils.fields import StatusField
 from model_utils import Choices
 from core.models import DifficultyChoice
 
+class DurationChoice(Enum):
+    All = 0
+    CrashCourse = 1
+    GiveMeAFeel = 2
+    FullLength = 3
+
 class CourseStatus(Enum):
     Active = "Active"
     Complete = "Complete"
@@ -65,6 +71,7 @@ class Course(models.Model):
     price = MoneyField(max_digits=8, decimal_places=2, default_currency='INR', null=True, default=None, blank=True)
     instructors = models.ManyToManyField(Instructor)
     tags = models.ManyToManyField(CourseTag)
+    extractor_version = models.PositiveSmallIntegerField(default = 0)
 
 
 class CourseUserRelation(models.Model):

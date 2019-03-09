@@ -17,18 +17,18 @@ from functools import reduce
 def load_courses(request):
     topics = request.GET.get('topic').split()
     difficulty = int(request.GET.get('difficulty'))
-    provider = None
-    try:
-        provider = int(request.GET.get('provider'))
-    except Exception:
-        pass
+    duration = int(request.GET.get('duration'))
     courses = Course.objects.filter(status=1)
     if len(topics) > 0:
         courses = courses.filter(reduce(operator.and_, (Q(title__icontains=x) for x in topics)))
     if difficulty != "" and difficulty != DifficultyChoice.All.value:
         courses = courses.filter(difficulty=difficulty)
-    if provider:
-        courses = courses.filter(provider__id=provider)
+    if duration == 1:
+        courses = courses.filter(duration__lte=timedelta(hours=4))
+    elif duration == 2:
+        courses = courses.filter(Q(duration__lt=timedelta(hours=15)), Q(duration__gt=timedelta(hours=4)))
+    elif duration == 3:
+        courses = courses.filter(Q(duration__gt=timedelta(hours=15)))
 
     return render(request, 'course_list_component.html', {'courses': courses.order_by('title')[:10]})
 

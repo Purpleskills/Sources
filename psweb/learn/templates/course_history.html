@@ -73,9 +73,9 @@ $(document).on('click','.completebutton', function() {
 
 // $(document).on('submit','.historyform', function(event){
 $(document).on('click','.removebutton', function() {
-    event.preventDefault();
+    //event.preventDefault();
     var eventid = $(this).attr("data-course");
-    /*$.ajax({
+    $.ajax({
         url: '{% url 'learn:ajax_remove_event' %}',
         type: "GET",
         data: { 'eventid': eventid },
@@ -93,7 +93,7 @@ $(document).on('click','.removebutton', function() {
         error: function (erro) {
             alert("Unable to remove the course at the moment. Please try again.");
         }
-    });*/
+    });
 });
 //-->
 </script>

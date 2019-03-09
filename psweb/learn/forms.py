@@ -11,5 +11,8 @@ class CourseFilterForm(forms.Form):
     difficulty = forms.ChoiceField(label='Difficulty level', required=False,
                                          initial=DifficultyChoice.All.value, choices=[(tag.value, tag.name) for tag in DifficultyChoice],
                                          widget=forms.Select(attrs={'class': 'form-control'}))
+    duration = forms.ChoiceField(label='Duration', required=False,
+                                         initial=DurationChoice.All.value, choices=[(tag.value, tag.name) for tag in DurationChoice],
+                                         widget=forms.Select(attrs={'class': 'form-control'}))
     provider = forms.ModelChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control'}),
                                      queryset=CourseProvider.objects.all())

@@ -94,15 +94,14 @@
         event.preventDefault(); //so that we stop normal form submit.
         var topic = $('#id_topic').val();
         var difficulty = $('#id_difficulty').val();
-        var providerid = $('#id_provider').val();
-        doSearch(topic, difficulty, providerid);
+        var duration = $('#id_duration').val();
+        doSearch(topic, difficulty, duration);
 
         <!--$.ajax({-->
             <!--url: url,-->
             <!--data: {-->
                 <!--'topic': topic,-->
                 <!--'difficulty': difficulty,-->
-                <!--'provider': providerid-->
             <!--},-->
             <!--success: function (data) {-->
                 <!--if (data == ""){-->
@@ -121,16 +120,16 @@
     function invokeSearch( searchstring, difficulty ){
         $('#id_topic').val(searchstring);
         $('#id_difficulty').val(difficulty);
-        doSearch(searchstring, difficulty, "");
+        doSearch(searchstring, difficulty, 0);
     }
 
-    function doSearch ( topic, difficulty, providerid ){
+    function doSearch ( topic, difficulty, duration){
         $.ajax({
             url: "{% url 'learn:ajax_load_courses' %}",
             data: {
                 'topic': topic,
                 'difficulty': difficulty,
-                'provider': providerid
+                'duration': duration
             },
             success: function (data) {
                 if (data == ""){
@@ -203,7 +202,7 @@
                     <div class="row g-mb-40">
                         <div class="col-md-4"><strong>{{ form.topic.label }}<br /></strong> {{ form.topic }}</div>
                         <div class="col-md-4"><strong>{{ form.difficulty.label }}</strong> {{ form.difficulty }}</div>
-                        <div class="col-md-4"><strong>{{ form.provider.label }}</strong> {{ form.provider }}</div>
+                        <div class="col-md-4"><strong>{{ form.duration.label }}</strong> {{ form.duration }}</div>
                     </div>
                     <div class="row g-mb-20">
                         <div class="col-md-4">

@@ -21,7 +21,7 @@
                             <span><i class="icon-shield g-pos-rel g-top-1 g-color-blue g-mr-5"></i>{{course.GetDifficultyName}}</span>
                         </li>
                         <li class="list-inline-item g-mr-30">
-                            {%if course.tags != "learn.CourseTag.None" %}
+                            {%if course.tags_set.count %}
                                 <i class="icon-paper-clip g-pos-rel g-top-1 g-color-blue g-mr-5"></i> {{course.tags}}
                             {%endif%}
                         </li>
