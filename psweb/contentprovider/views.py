@@ -20,7 +20,7 @@ userAndPass = b64encode(b"GpxNVedkBslJE6CTga0f56iRG4vzzmYU24gzH0g5:FGMx5x8Vjr7Ly
 headers = { 'Authorization' : 'Basic %s' %  userAndPass }
 onto_path.append(os.path.dirname(__file__))
 onto = get_ontology("CSO.owl")
-nltk.download('stopwords')
+nltk.download(info_or_id='stopwords', download_dir=os.path.dirname(__file__))
 
 PLURALSIGHT_EXTRACTOR_VERSION = 1
 UDEMY_EXTRACTOR_VERSION = 1
@@ -102,7 +102,7 @@ class UdemyImport(LoginRequiredMixin, TemplateView):
                                     request = requests.request('GET', 'https://www.udemy.com/api-2.0/courses', params=payload,
                                                            headers=headers)
                                 new_res = request.json()
-                                if 'results' in res:
+                                if 'results' in new_res:
                                     res = new_res
                                     rawdata.raw_data = json.dumps(new_res)
                                     rawdata.save()

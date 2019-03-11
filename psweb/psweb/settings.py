@@ -35,7 +35,7 @@ STATICFILES_DIRS = (
 )
 
 
-MEDIA_URL = "http://0.0.0.0:8000/media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.dirname(BASE_DIR) + "/media/"
 STORAGE_URL = MEDIA_URL
 
@@ -170,15 +170,12 @@ if 'RDS_HOSTNAME' not in os.environ:
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'purpleskillsdb',
-                'USER': 'psroot',
-                'PASSWORD': 'pswhatever1',
-                'HOST': os.environ['RDS_HOSTNAME'],
-                'PORT': 3306,
-                'OPTIONS': {
-                        'charset': 'utf8mb4',
-                        'use_unicode': True, },
+            'USER': 'psroot',
+            'PASSWORD': 'pswhatever1',
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': '',
         }
     }
     CACHES = {

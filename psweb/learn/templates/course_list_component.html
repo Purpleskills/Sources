@@ -1,5 +1,5 @@
 {% for course in courses %}
-    <div class="row justify-content-md-center g-mb-20">
+    <div class="row align-content-md-start g-mb-20">
         <form method="post" class="scheduleform" data-schedule-url="{% url 'learn:ajax_schedule_courses' %}" novalidate>
         {% csrf_token %}
             <article>
@@ -12,7 +12,7 @@
 
                 <p class="g-mb-15">{%if course.description%}{{course.description}}{%else%}No Description Available{%endif%}</p>
 
-                <div class="d-lg-flex justify-content-between align-items-center">
+                <div class="d-lg-flex justify-content-between align-items-start">
                     <ul class="list-inline g-mb-10 g-mb-0--lg">
                         <li class="list-inline-item g-mr-30">
                             <span><i class="icon-clock g-pos-rel g-top-1 g-color-blue g-mr-5"></i>Duration - {{course.duration}} </span>

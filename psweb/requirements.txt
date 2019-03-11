@@ -1,7 +1,7 @@
 django==2.0.1
 django-debug-toolbar
-postgresql==9.5
-psycopyg2==2.7.6.1
+postgres
+psycopg2
 django-crispy-forms==1.7.2
 django-scheduler==0.8.8
 django-money
@@ -9,3 +9,4 @@ django-model-utils==3.1.2
 django_jchart
 nltk
 owlready2
+requests
