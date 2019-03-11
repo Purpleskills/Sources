@@ -1,5 +1,5 @@
 {% for course in courses %}
-    <div class="row align-items-start g-mb-20">
+    <div class="row justify-content-md-center g-mb-20">
         <form method="post" class="scheduleform" data-schedule-url="{% url 'learn:ajax_schedule_courses' %}" novalidate>
         {% csrf_token %}
             <article>

@@ -1,25 +1,57 @@
 {% for event in events %}
     <form method="post" class="historyform" novalidate>
         {% csrf_token %}
-        <div class="row justify-content-md-center">
-            <div class="col">{{event.title}}</div>
-            <div class="col">{{event.start}}</div>
-            <div class="col">{{event.end_recurring_period}}</div>
-            <div class="col-1">{{event.rule.frequency}}</div>
-            <div class="col"><label for="certupload"> Select the certificate file to upload</label>&nbsp;&nbsp;<input type="file" id="certupload"></div>
-            <div class="col"><span id="coursediv" class="course-rating" data-event="{{event.id}}" data-rating="{{event.courseuserrelation_set.first.rating}}"></span></div>
-            <div class="col"><textarea class="form-conrol" placeholder="add any feedback that you may have on this course." cols="50"></textarea></div>
-            <div class="col-1">
-                {% if event.courseuserrelation_set.first.is_complete %}
-                    <i class="icon-check g-color-red g-pos-rel g-top-1 g-mr-5"></i> <strong class="g-color-green">Completed</strong>
-                {% else %}
-                    <button type="submit" class="completebutton btn btn-light lightmoss-background buttonface-dark g-mr-20" name="complete" id="id_complete" data-course="{{event.id}}">Mark as Done</button>
-                {% endif %}
+        <article>
+            <header class="g-my-15">
+                <h2 class="h4 g-mb-5">
+                    <span class="g-color-gray-dark-v1"><i class="icon-graduation g-color-green"></i> {{event.title}}</span> &nbsp;&nbsp;
+                    <a class="btn btn-sm u-btn-darkgreen g-rounded-50 g-mr-10 g-mb-15" href="#">{{event.courseuserrelation_set.first.completion_state}}</a>
+                </h2>
+            </header>
+            <div class="d-lg-flex justify-content-between align-items-center">
+                <ul class="list-inline g-mb-10 g-mb-0--lg">
+                    <li class="list-inline-item g-mr-30">
+                        <span><i class="icon-calendar g-pos-rel g-top-1 g-color-blue g-mr-5"></i>Start - {{event.start}} </span>
+                    </li>
+                    <li class="list-inline-item g-mr-30">
+                        <span><i class="icon-calendar g-pos-rel g-top-1 g-color-blue g-mr-5"></i>Until: {{event.end_recurring_period}}</span>
+                    </li>
+                    <li class="list-inline-item g-mr-30">
+                        {%if course.tags != "learn.CourseTag.None" %}
+                            <i class="icon-clock g-pos-rel g-top-1 g-color-blue g-mr-5"></i> {{event.rule.frequency}}
+                        {%endif%}
+                    </li>
+                    <li class="list-inline-item g-mr-30">
+                        <img src="{{event.courseuserrelation_set.first.course.provider.logo}}" style="height:20px;" alt="{{event.courseuserrelation_set.first.course.provider.name}}" title="{{event.courseuserrelation_set.first.course.provider.name}}" />
+                    </li>
+                </ul>
             </div>
-            <div class="col-1">
-                <button type="submit" class="removebutton btn btn-light lightmoss-background buttonface-dark" name="remove" id="id_remove" data-course="{{event.id}}">Remove</button>
+            <div class="d-lg-flex align-content-start g-mt-20">
+                <ul class="list-inline g-mb-10 g-mb-0--lg">
+                    <li class="list-inline-item g-mr-30">Rate this course: <span id="coursediv" class="course-rating" data-event="{{event.id}}" data-rating="{{event.courseuserrelation_set.first.rating}}"></span></li>
+                    <li class="list-inline-item g-mr-30">
+                        <label for="certupload"> Select the certificate file to upload</label>&nbsp;&nbsp;<input type="file" id="certupload">
+                    </li>
+                    <li class="list-inline-item g-mr-30" style="width:60%;">
+                        <label class="g-mb-10" for="ta_comment">Feedback</label>
+                        <textarea class="form-control form-control-md" id="ta_comment" placeholder="add any feedback that you may have on this course." rows="3"></textarea>
+                    </li>
+                </ul>
             </div>
-        </div>
-        <hr class="g-brd-gray-light-v4" />
+            <div class="d-lg-flex g-my-20">
+                <ul class="list-inline g-mb-10 g-mb-0--lg">
+                    <li class="list-inline-item g-mr-30">
+                        <button type="submit" class="savebutton btn btn-md u-btn-outline-darkgreen u-btn-hover-v1-1 g-font-weight-600 g-letter-spacing-0_5 text-uppercase rounded-0 g-mr-10 g-mb-15" name="save" id="id_save" data-course="{{event.id}}">
+                            <i class="fa fa-check-circle g-mr-3"></i> Save changes</button>
+                    </li>
+                    <li class="list-inline-item g-mr-30">
+                        <button type="submit" class="removebutton btn btn-md u-btn-outline-darkgreen u-btn-hover-v1-1 g-font-weight-600 g-letter-spacing-0_5 text-uppercase rounded-0 g-mr-10 g-mb-15" name="remove" id="id_remove" data-course="{{event.id}}">
+                            <i class="fa fa-times-circle g-mr-3"></i> Remove</button>
+                    </li>
+                </ul>
+            </div>
+        </article>
+
+        <hr class="g-brd-gray-dark-v4 g-my-5" />
     </form>
 {% endfor %}

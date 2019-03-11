@@ -6,6 +6,7 @@ from schedule.models import Event
 from model_utils.fields import StatusField
 from model_utils import Choices
 from core.models import DifficultyChoice
+from django.utils import timezone
 
 class DurationChoice(Enum):
     All = 0
@@ -75,16 +76,27 @@ class Course(models.Model):
 
 
 class CourseUserRelation(models.Model):
-    STATUS = Choices('Active', 'Complete')
+    STATUS = Choices('Active', 'Complete', 'Abandoned', 'Ongoing')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
     rating = models.SmallIntegerField(null=True)
     feedback = models.TextField(null=True)
+    certificate = models.FileField(upload_to='certs/', null=True)
     status = StatusField()
 
     @property
-    def is_complete(self):
-        return self.status == "Complete"
+    def completion_state(self):
+        if self.status == "Complete":
+            return "Completed"
+
+        today = timezone.now()
+        if self.event.start > today:
+            return "Active"
+        if self.event.start < today and self.event.end_recurring_period > today:
+            return "Ongoing"
+        if self.event.end_recurring_period < today:
+            return "Abandoned"
+
 
 

@@ -54,7 +54,7 @@ def schedule_courses(request):
         calendar_slug = 'scheduled_cal_' + str(request.user.id)
         calendar = Calendar.objects.get(slug=calendar_slug)
         event = Event.objects.create(
-            title='Training: ' + course.title,
+            title=course.title,
             start=start,
             end=end,
             rule=rule,
