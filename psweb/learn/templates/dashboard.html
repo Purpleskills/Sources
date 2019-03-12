@@ -4,6 +4,7 @@
 
 {% block extra_css %}
     <link rel='stylesheet' type='text/css' href="{% static 'fullcalendar/fullcalendar.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/custom.css'%}">
 {% endblock %}
 
 {% block extra_js %}
@@ -43,9 +44,12 @@
                 timeZone: 'UTC',
                 themeSystem: 'bootstrap4',
                 header: {
-                    left: 'prev,next',
+                    left: 'today prev,next',
                     center: 'title',
                     right: ''
+                },
+                buttonText: {
+                    today: 'this year',
                 },
                 eventLimit: true,
                 events: '/schedule/api/occurrences?calendar_slug=' + calendar_slug
@@ -168,40 +172,48 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid g-py-40 g-px-100">
+    <div class="container-fluid g-py-40 g-px-30">
         <div class="row">
             <div class="col">
-                <div class="row g-mb-40">
-                    <div class="col-2">User: <br />{{ user.first_name }} {{ user.last_name }}</div>
-                    <div class="col">Current skill Goals: <br />
-                    {% for ug in goals %}
-                        <a href="#" onclick="invokeSearch('{{ ug.skill_goal }}', {{ ug.difficulty}}); return false;">{{ ug.skill_goal }}</a> - {{ ug.GetDifficultyName }}<br />
-                    {% endfor %}
+                <div class="card g-brd-gray-light-v7 g-pa-15 g-pa-25-30--md g-mb-10">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h2><a href="#!" class="btn btn-lg u-btn-darkgreen g-mr-10 g-mb-15">
+                                    <i class="fa fa-user-o"></i>
+                                </a>&nbsp;{{ user.first_name }} {{ user.last_name }}</h2>
+                        </div>
+                        <div class="col-md-9"><strong>Current skill Goals:</strong>
+                        <ul class="list-inline g-mb-10 g-mb-0--lg">
+                        {% for ug in goals %}
+                            <li class="list-inline-item g-mr-30"><a href="#" onclick="invokeSearch('{{ ug.skill_goal }}', {{ ug.difficulty}}); return false;">
+                                <span class="u-label g-rounded-3 g-bg-brown buttonface-dark g-mr-10 g-mb-15"><i class="fa fa-binoculars g-mr-3"></i>
+                                    <strong>{{ ug.skill_goal }}</strong> - {{ ug.GetDifficultyName }}
+                                </span></a></li>
+                        {% endfor %}
+                        </ul>
+                        </div>
                     </div>
                 </div>
-                <hr />
                 <form method="post" id="filterform" data-filter-url="{% url 'learn:ajax_load_courses' %}" novalidate>
                 {% csrf_token %}
-                    <div class="row g-mb-40">
-                        <div class="col-md-4"><strong>{{ form.topic.label }}<br /></strong> {{ form.topic }}</div>
-                        <div class="col-md-4"><strong>{{ form.difficulty.label }}</strong> {{ form.difficulty }}</div>
-                        <div class="col-md-4"><strong>{{ form.duration.label }}</strong> {{ form.duration }}</div>
-                    </div>
-                    <div class="row g-mb-20">
-                        <div class="col-md-4">
-                            <button type="submit" class="btn-u" id="id_go">Go</button>
-                        </div>
+                    <div class="row g-mb-20 justify-content-lg-start align-items-lg-baseline">
+                        <div class="col-md-2"><strong>{{ form.topic.label }}<br /></strong> {{ form.topic }}</div>
+                        <div class="col-md-2"><strong>{{ form.difficulty.label }}</strong> {{ form.difficulty }}</div>
+                        <div class="col-md-2"><strong>{{ form.duration.label }}</strong> {{ form.duration }}</div>
+                        <div class="col-md-1"><br /><button type="submit" class="btn btn-md fa fa-search u-btn-darkgreen g-mr-10 g-mb-15" id="id_go"></button></div>
                     </div>
                 </form>
                 <hr />
 
-                <div id="course_list_div">
+                <div id="course_list_div" class="g-px-15">
                     <h3>Select from the above filtering criteria to see available courses</h3>
                 </div>
 
             </div>
             <div class="col">
-                <div id="calendar" class="fc fc-bootstrap4 fc-ltr"></div>
+                <div class="card g-brd-gray-light-v7 g-pa-15 g-pa-25-30--md g-mb-10">
+                    <div id="calendar" class="fc fc-bootstrap4 fc-ltr"></div>
+                </div>
             </div>
         </div>
 

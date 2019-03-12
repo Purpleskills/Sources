@@ -1,6 +1,6 @@
 /* Add here all your css styles (customizations) */
 
-/* colors */
+/*------------------ colors ---------------------------------------*/
 .g-bg-lightmoss {
   background-color: #d1e8e2 !important; }
 
@@ -15,10 +15,10 @@
 
 .buttonface-dark {color: #2c3531}
 
-/*  text */
+/*-----------------------------------  text -----------------------------*/
 .table-header { font-weight:bold; }
 
-/*  buttons */
+/*--------------------------------------  buttons -----------------------------*/
 /* Outline Button darkgreen */
 .u-btn-outline-darkgreen {
   color: #116466;
@@ -168,3 +168,9 @@
 .u-btn-darkgreen.u-btn-hover-v2-2:hover {
   overflow: hidden;
   background-color: transparent; }
+
+  /* ------------------- misc elements styles ---------------*/
+
+.fc-event-dot {
+    background-color: #116466;
+}
