@@ -1,0 +1,89 @@
+{% extends "homebase.html" %}
+{% load staticfiles %}
+{% block title %} Upload offline data {% endblock %}
+{% block extra_js %}
+<script src="{% static 'assets/js/jquery.formset.js' %}"></script>
+<script type="text/javascript">
+<!--
+    $(function() {
+        $('.form-row.inline.{{ formset.prefix }}').formset({
+           prefix: '{{ formset.prefix }}',
+        });
+    });
+
+    $(document).on('click','#upload_btn', function(event){
+        event.preventDefault();
+        if ("" == $("#id_course_file").val()){
+            alert ( "Please select a file to upload" );
+        } else {
+            var formData = new FormData($('form')[0]);
+            $.ajax({
+                url: '{%url "contentprovider:offline-upload"%}',  //Server script to process data
+                enctype: 'multipart/form-data',
+                type: 'POST',
+                xhr: function() {  // Custom XMLHttpRequest
+                    var myXhr = $.ajaxSettings.xhr();
+                    if(myXhr.upload){ // Check if upload property exists
+                        myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // For handling the progress of the upload
+                    }
+                    return myXhr;
+                },
+                success: function (jsondata) {
+                    //var rawResponse = JSON.parse(jsondata);
+                    if (jsondata.success == true){
+                        $("#course-template-container").html(jsondata.code);
+                        $('.form-row.inline.{{ formset.prefix }}').formset({
+                           prefix: '{{ formset.prefix }}',
+                        });
+                    } else {
+                        alert(rawResponse.error_message); // (rawResponse.error_message);
+                    }
+                },
+                error: function (erro) {
+                    alert("Error uploading the file"); //(erro.responseText);
+                },
+                // Form data
+                data: formData,
+                //Options to tell jQuery not to process data or worry about content-type.
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        }
+    });
+    function progressHandlingFunction(e){
+        if(e.lengthComputable){
+            $('#progress').attr({value:e.loaded,max:e.total});
+        }
+    }
+//-->
+</script>
+{% endblock extra_js %}
+
+{% block content %}
+    <div class="container-fluid g-py-40 g-px-40">
+        <form action="{{ action }}" method="POST" role="form"  enctype="multipart/form-data" class="g-pa-15">
+		{% csrf_token %}
+            {{ uploadform.course_file }}{{ uploadform.course_file.errors }}
+            <button id="upload_btn" type="submit" class="btn-u" name="upload">
+                <i class="fa fa-arrow-circle-up"></i>  Upload
+            </button>
+            <hr />
+
+            <header class="g-my-15">
+                <h2 class="h4 g-mb-5">
+                    <span class="g-color-gray-dark-v1"><i class="icon-globe g-color-brown"></i> Offline Courses</span>
+                </h2>
+            </header>
+
+            <div id="course-template-container">
+                {% include "offline_course_component.html"%}
+            </div>
+            <div>
+                <button id="savebtn" type="submit" class="savebutton btn btn-md u-btn-outline-darkgreen u-btn-hover-v1-1 g-font-weight-600 g-letter-spacing-0_5 text-uppercase rounded-0 g-mr-10 g-mb-15">
+                    <i class="fa fa-save g-mr-3"></i> Save to DB
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

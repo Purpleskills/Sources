@@ -1,5 +1,4 @@
 from django.conf.urls import include, url
-
 from .views import *
 
 app_name='contentprovider'
@@ -9,4 +8,6 @@ urlpatterns = [
     url(r'^pluralsight/$', PluralSightImport.as_view(), name='ps'),
     url(r'^coursera/$', CourseraImport.as_view(), name='ce'),
     url(r'^lynda/$', LyndaImport.as_view(), name='lynda'),
+    url(r'^offline/$', OfflineImport.as_view(), name='offline'),
+    url(r'^ajax/course/offline/upload/$', OfflineCourseUpload.as_view(), name='offline-upload'),
 ]

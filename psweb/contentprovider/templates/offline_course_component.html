@@ -1,0 +1,34 @@
+{{ formset.management_form }}
+{{ formset.non_form_errors }}
+{% if error %}
+<div class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{formset.errors}}</div>
+<div class="row g-ma-10">
+    <span class="text-highlights text-highlights-red rounded-2x"><strong>Save failed: Please see below to find the specific error</strong></span>
+</div>
+{%endif%}
+<div id="formset g-pa-15">
+    {% for form in formset.forms %}
+        <div class="row g-my-10">
+            <div class="col-md-4"><strong>{{ form.title.label }}</strong>{{ form.title }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.title.errors }}</span></div>
+            <div class="col-md-4"><strong>{{ form.url.label }}</strong>{{ form.url }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.url.errors }}</span></div>
+            <div class="col-md-4"><strong>{{ form.description.label }}</strong>{{ form.description }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.description.errors }}</span></div>
+        </div>
+        <div class="row g-my-10">
+            <div class="col-md-2"><strong>{{ form.difficulty.label }}</strong>{{ form.difficulty }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.difficulty.errors }}</span></div>
+            <div class="col-md-2"><strong>{{ form.duration.label }}</strong>{{ form.duration }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.duration.errors }}</span></div>
+            <div class="col-md-4"><strong>{{ form.price.label }}</strong>{{ form.price }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.price.errors }}</span></div>
+        </div>
+        <div class="row g-my-10">
+            <div class="col-md-4"><strong>{{ form.instructor_name.label }}</strong>{{ form.instructor_name }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.instructor_name.errors }}</span></div>
+            <div class="col-md-4"><strong>{{ form.instructor_company.label }}</strong>{{ form.instructor_company }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.instructor_company.errors }}</span></div>
+            <div class="col-md-4"><strong>{{ form.instructor_web.label }}</strong>{{ form.instructor_web }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.instructor_web.errors }}</span></div>
+        </div>
+        <div class="row g-my-10">
+            <div class="col-md-3"><strong>{{ form.max_students.label }}</strong>{{ form.max_students }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.max_students.errors }}</span></div>
+            <div class="col-md-3"><strong>{{ form.min_students.label }}</strong>{{ form.min_students }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.min_students.errors }}</span></div>
+            <div class="col-md-3"><strong>{{ form.session_count.label }}</strong>{{ form.session_count }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.session_count.errors }}</span></div>
+            <div class="col-md-3"><strong>{{ form.prerequisites.label }}</strong>{{ form.prerequisites }}<span class="u-label g-bg-lightred g-rounded-3 g-mr-10 g-mb-15">{{ form.prerequisites.errors }}</span></div>
+        </div>
+        <hr style="border-color:#e74c3c;"/>
+    {% endfor %}
+</div>

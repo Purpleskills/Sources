@@ -1,20 +1,25 @@
-import psycopg2
-import json
-from django.views.generic import TemplateView
-import ssl
+from django.views.generic import TemplateView, FormView
+from django.forms.models import formset_factory
 from http.client import HTTPSConnection
-from django.http import HttpResponse
-from base64 import b64encode
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import *
-from learn.models import Course, CourseTag, CourseProvider, DifficultyChoice, Instructor, Duration
-import requests
+from .forms import OfflineContentloadForm, BulkCourseForm
+from learn.models import Course, CourseTag, CourseProvider, DifficultyChoice, Instructor, Duration, LiveTraining
 from django.contrib.auth.mixins import LoginRequiredMixin
 from datetime import timedelta
 from django.utils import timezone
+from django.template import loader, Context
+from base64 import b64encode
+import ssl
+import requests
+import psycopg2
+import json
 import nltk
 from nltk.corpus import stopwords
 from owlready2 import *
 from functools import reduce
+from openpyxl import load_workbook
+import logging
 
 userAndPass = b64encode(b"GpxNVedkBslJE6CTga0f56iRG4vzzmYU24gzH0g5:FGMx5x8Vjr7LyBokikzIT9t4uFSSa30HMhMGcEHZBy38FV2snjwew0l9o3ctugs1KRcIvBQyZDidYKuMKrWUGHCA0qRNYMvFg859QhpatbpBPZW3QNAeJzpHBAYNkBoy").decode("ascii")
 headers = { 'Authorization' : 'Basic %s' %  userAndPass }
@@ -26,6 +31,7 @@ PLURALSIGHT_EXTRACTOR_VERSION = 1
 UDEMY_EXTRACTOR_VERSION = 1
 LYNDA_EXTRACTOR_VERSION = 1
 COURSERA_EXTRACTOR_VERSION = 1
+OFFLINE_EXTRACTOR_VERSION = 1
 
 def AddCourseTags(course):
     tagsSource = course.title
@@ -461,3 +467,161 @@ class LyndaImport(LoginRequiredMixin, TemplateView):
         lyndaData.processed = timezone.now()
         lyndaData.save()
         return HttpResponse("Success")
+
+class OfflineImport(LoginRequiredMixin, TemplateView):
+    template_name = "offline_import.html"
+    success_url = '/learn'
+    # form_class=OfflineContentloadForm
+    prefix="offc"
+
+    def computeDuration(self, duration_str):
+        time_strs = duration_str.split(":")
+        return int(time_strs[0]) * 3600 + int(time_strs[1]) * 60 + int(time_strs[2])
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        offlinecontentform = OfflineContentloadForm()
+        CourseFormSet = formset_factory(BulkCourseForm, extra=1, validate_max=True)
+        offc_formset = CourseFormSet(prefix=self.prefix)
+        return self.render_to_response(self.get_context_data(uploadform=offlinecontentform, formset=offc_formset))
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        self.object = None
+        CourseFormSet = formset_factory(BulkCourseForm, extra=1, validate_max=True)
+        offc_formset = CourseFormSet(request.POST, prefix=self.prefix)
+        # save the uploaded course data
+        author = self.request.user
+        if offc_formset.is_valid():
+            for offc_form in offc_formset.forms:
+                if offc_form.has_changed():
+                    if offc_form.is_valid():
+                        title = offc_form.cleaned_data["title"]
+                        url = offc_form.cleaned_data["url"]
+                        description = offc_form.cleaned_data["description"]
+                        difficulty = offc_form.cleaned_data["difficulty"]
+                        duration = offc_form.cleaned_data["duration"]
+                        instructor_name = offc_form.cleaned_data["instructor_name"]
+                        instructor_company = offc_form.cleaned_data["instructor_company"]
+                        instructor_web = offc_form.cleaned_data["instructor_web"]
+                        price = offc_form.cleaned_data["price"]
+                        max_students = offc_form.cleaned_data["max_students"]
+                        min_students = offc_form.cleaned_data["min_students"]
+                        session_count = offc_form.cleaned_data["session_count"]
+                        prerequisites = offc_form.cleaned_data["prerequisites"]
+                        course = Course()
+                        course.title = title
+                        course.url = url
+                        course.difficulty = difficulty
+                        course.status = 1
+                        course.mode=2 #offline
+                        course.description = description
+                        course.price = price
+                        course.duration = duration
+                        course.save()
+                        for instructor in instructor_name.split(','):
+                            newInstructor, created = Instructor.objects.get_or_create(name=instructor)
+                            if created:
+                                newInstructor.save()
+                            course.instructors.add(newInstructor)
+                        newProvider, p_created = CourseProvider.objects.get_or_create(name=instructor_company, url=instructor_web)
+                        if p_created:
+                            newProvider.save()
+                        course.provider = newProvider
+                        AddCourseTags(course)
+                        course.extractor_version = OFFLINE_EXTRACTOR_VERSION
+                        course.save()
+
+                        liveTraining = LiveTraining(course=course, max_students=max_students, min_students=min_students, session_count=session_count, prerequisites=prerequisites)
+                        liveTraining.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:  # form invalid
+            return self.render_to_response(self.get_context_data(uploadform=OfflineContentloadForm(), formset=offc_formset, error=True))
+
+    def form_invalid(self, mcqcreate_form, mcqa_formset):
+        return self.render_to_response(self.get_context_data(form=mcqcreate_form, formset=mcqa_formset))
+
+
+class OfflineCourseUpload(LoginRequiredMixin, FormView):
+    raise_exception = True
+    # template_name = "offline_import.html"
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        prefix = "offc"
+        course_data = self.handle_uploaded_file(request.FILES.get('course_file'), request.POST, prefix)
+        offlinecontentform = OfflineContentloadForm(request.POST, request.FILES)
+        CourseFormSet = formset_factory(BulkCourseForm, extra=len(course_data), validate_max=True)
+        offc_formset = CourseFormSet(course_data, prefix=prefix)
+        template_file_name = 'offline_course_component.html'
+        t = loader.get_template(template_file_name)
+        context = self.get_context_data(form=offlinecontentform, formset=offc_formset)
+        code = t.render(context)
+        if "error_message" in request.POST:
+            return HttpResponse(
+                json.dumps({'code': code, 'success': False, 'error_message': request.POST["error_message"]}), content_type='application/json')
+        else:
+            return HttpResponse(json.dumps({'code': code, 'success': True}), content_type='application/json')
+            # return self.render_to_response(context)
+
+    def verify_headers(self, sheet):
+        headers = ["ID", "Title", "Description", "Url", "Level (Beginner/Intermidiate/Advanced)", "Price", "Currency", "Max student",
+                   "Min student", "Is asssessment required", "Tags", "Prerequisites", "Instructor.Title", "Instructor.Name",
+                   "Instructor.LinkedIn", "Instructor.website", "Instructor.Company", "Is Available on trainer location",
+                   "Primary cities", "Duration", "Is recurring", "Recurring In", "Number of times" ]
+        title_list = []
+        for row in sheet.iter_rows(min_row=2, max_row=2, min_col=1):
+            for cell in row:
+                title_list.append(cell.value)
+        return all(i == j for (i, j) in zip(headers, title_list))
+
+    def handle_uploaded_file(self, file, post, prefix):
+        new_post = post.copy()
+        try:
+            wb = load_workbook(file)
+            sheet = wb['Courses']
+            if self.verify_headers(sheet):
+                rows_iter = sheet.iter_rows(min_col=1, min_row=3, max_col=21, max_row=sheet.max_row)
+                # vals = [[cell.value for cell in row] for row in rows_iter]
+                form_index = 0
+                for row in rows_iter:
+                    item_prefix = prefix + "-" + str(form_index) + "-"
+                    for cell in row:
+                        if cell.col_idx == 2:
+                            new_post[item_prefix + "title"] = str(cell.value)
+                        elif cell.col_idx == 3:
+                            new_post[item_prefix + "description"] = "" if cell.value==None else cell.value
+                        elif cell.col_idx == 4:
+                            new_post[item_prefix + "url"] = cell.value
+                        elif cell.col_idx == 5:
+                            new_post[item_prefix + "difficulty"] = DifficultyChoice[cell.value].value
+                        elif cell.col_idx == 6:
+                            new_post[item_prefix + "price_0"] = cell.value
+                        elif cell.col_idx == 7:
+                            new_post[item_prefix + "price_1"] = cell.value
+                        elif cell.col_idx == 8:
+                            new_post[item_prefix + "max_students"] = cell.value
+                        elif cell.col_idx == 9:
+                            new_post[item_prefix + "min_students"] = cell.value
+                        elif cell.col_idx == 12:
+                            new_post[item_prefix + "prerequisites"] = "" if cell.value==None else cell.value
+                        elif cell.col_idx == 14:
+                            new_post[item_prefix + "instructor_name"] = cell.value
+                        elif cell.col_idx == 16:
+                            new_post[item_prefix + "instructor_web"] = cell.value
+                        elif cell.col_idx == 17:
+                            new_post[item_prefix + "instructor_company"] = cell.value
+                        elif cell.col_idx == 20:
+                            new_post[item_prefix + "duration"] = '{:02}:00:00'.format(int(cell.value))
+                        elif cell.col_idx == 23:
+                            new_post[item_prefix + "session_count"] = 0 if cell.value==None else cell.value
+                    form_index += 1
+                new_post[prefix + '-TOTAL_FORMS'] = form_index
+                new_post[prefix + '-INITIAL_FORMS'] = form_index
+            else:
+                new_post["error_message"] = "This sheet does not have the correct set of columns"
+        except Exception as e:
+            new_post["error_message"] = "Format not supported"  # e.message
+            logging.getLogger('purpleskills').error(msg=file.name + ": " + e.message)
+
+        return new_post

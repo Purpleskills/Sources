@@ -30,8 +30,8 @@ class CourseProvider(models.Model):
         return LOGO_UPLOAD_TO + filename[-30:]
 
     name = models.CharField(max_length=256)
-    status = models.SmallIntegerField()
-    logo = models.ImageField(upload_to=GetLogoFilename)
+    status = models.SmallIntegerField(default=1)
+    logo = models.ImageField(upload_to=GetLogoFilename, null=True, default=None, blank=True)
     url=models.URLField()
 
     def __str__(self):
@@ -42,8 +42,8 @@ class Instructor(models.Model):
         return 'instructor/' + filename + "_" + str(self.id)
 
     name = models.CharField(max_length=256, unique=True)
-    photo = models.URLField()
-    url = models.URLField()
+    photo = models.URLField(null=True, default=None, blank=True)
+    url = models.URLField(null=True, default=None, blank=True)
 
 class CourseTag(models.Model):
     name = models.TextField()
@@ -65,7 +65,7 @@ class Course(models.Model):
     title = models.CharField(max_length=256)
     description = models.TextField(null=True)
     status = models.SmallIntegerField(default=1)
-    difficulty = models.SmallIntegerField(choices=[(tag, tag.value) for tag in DifficultyChoice])
+    difficulty = models.SmallIntegerField(choices=[(tag.value, tag) for tag in DifficultyChoice])
     duration = models.DurationField(null=True)
     provider = models.ForeignKey(CourseProvider, on_delete=models.PROTECT, null=True)
     thumbnail = models.URLField(null=True, default=None, blank=True)
@@ -73,7 +73,7 @@ class Course(models.Model):
     instructors = models.ManyToManyField(Instructor)
     tags = models.ManyToManyField(CourseTag)
     extractor_version = models.PositiveSmallIntegerField(default = 0)
-
+    mode=models.PositiveSmallIntegerField(default=1) # 1=Online, 2=offline, 3=Mixed
 
 class CourseUserRelation(models.Model):
     STATUS = Choices('Active', 'Complete', 'Abandoned', 'Ongoing')
@@ -99,4 +99,9 @@ class CourseUserRelation(models.Model):
             return "Abandoned"
 
 
-
+class LiveTraining(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.PROTECT)
+    max_students = models.SmallIntegerField(null=True)
+    min_students = models.SmallIntegerField(null=True)
+    session_count = models.SmallIntegerField(null=True)
+    prerequisites = models.TextField(null=True)
