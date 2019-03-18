@@ -5,54 +5,58 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>
 {% endblock extra_js %}
 {% block content %}
-    <div class="container-fluid g-py-40 g-px-100">
+    <div class="container-fluid g-py-40 g-px-30">
         <div class="row g-py-40">
-            <div class="col">
-                <h4>Training distribution for the current year</h4>
-                <div id="course_chart" style="width:600px;">
+            <div class="col-md-6">
+                <h3 class="g-color-teal">Training distribution for the current year</h3>
+                <div id="course_chart" style="width:100%;">
                     {{ bar_chart.as_html }}
                 </div>
             </div>
-            <div class="col">
-                <h4>Training cost (INR) per department</h4>
+            <div class="col-md-6">
+                <h3 class="g-color-teal">Training cost (INR) per department</h3>
                 <div id="dept_chart" style="width:350px;">
                     {{ pie_chart.as_html }}
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-3">
-                <h4>Goals scoreboard</h4>
-                <div class="row">
-                    <div class="col">Goal</div>
-                    <div class="col">Participants</div>
-                    <div class="col-1">Hours</div>
-                    <div class="col-2">Cost (INR)</div>
-                </div>
-                <div class="row">
-                    <div class="col">AI and Machine Learning - Beginner</div>
-                    <div class="col">56</div>
-                    <div class="col-1">1200</div>
-                    <div class="col-2">128900</div>
-                </div>
-                <div class="row">
-                    <div class="col">Advanced Java Programming - Expert</div>
-                    <div class="col">127</div>
-                    <div class="col-1">4600</div>
-                    <div class="col-2">341990</div>
-                </div>
-                <div class="row">
-                    <div class="col">Devops - Beginner</div>
-                    <div class="col">255</div>
-                    <div class="col-1">3200</div>
-                    <div class="col-2">789965</div>
-                </div>
-                <div class="row">
-                    <div class="col">Devops - Intermediate</div>
-                    <div class="col">108</div>
-                    <div class="col-1">3400</div>
-                    <div class="col-2">2549965</div>
-                </div>
+            <div class="col-xl-6">
+                <h3 class="g-color-teal">Goals scoreboard</h3>
+                <table class="table table-striped g-color-black no-footer">
+                    <thead><tr>
+                        <th>Goal</th>
+                        <th>Participants</th>
+                        <th>Hours</th>
+                        <th>Cost (INR)</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr role="row" class="g-bg-lightmoss">
+                            <td>AI and Machine Learning - Beginner</td>
+                            <td>56</td>
+                            <td>1200</td>
+                            <td>128900</td>
+                        </tr>
+                        <tr role="row">
+                            <td>Advanced Java Programming - Expert</td>
+                            <td>127</td>
+                            <td>4600</td>
+                            <td>341990</td>
+                        </tr>
+                        <tr role="row" class="g-bg-lightmoss">
+                            <td>Devops - Beginner</td>
+                            <td>255</td>
+                            <td>3200</td>
+                            <td>789965</td>
+                        </tr>
+                        <tr role="row">
+                            <td>Devops - Intermediate</td>
+                            <td>108</td>
+                            <td>3400</td>
+                            <td>2549965</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

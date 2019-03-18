@@ -30,6 +30,14 @@ class ProfileForm (forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(ProfileForm, self).__init__(*args, **kwargs)
+        ugs = UserGoals.objects.filter(user=self.user)
+        index = 1
+        for ug in ugs:
+            if index > 3:   # currently only 3 are allowed
+                break
+            self.fields['goal_' + str(index)].initial = ug.skill_goal
+            self.fields['level_' + str(index)].initial = ug.difficulty
+            index += 1
 
     def save(self):
         goal1 = self.data['goal_1']
@@ -38,6 +46,7 @@ class ProfileForm (forms.Form):
         level2 = self.data['level_2']
         goal3 = self.data['goal_3']
         level3 = self.data['level_3']
+        UserGoals.objects.filter(user=self.user).delete()
         if goal1 != "":
             ug1 = UserGoals(user=self.user, skill_goal=goal1, difficulty=level1)
             ug1.save()
@@ -47,8 +56,5 @@ class ProfileForm (forms.Form):
         if goal3 != "":
             ug3 = UserGoals(user=self.user, skill_goal=goal3, difficulty=level3)
             ug3.save()
-
-
-
 
         return True

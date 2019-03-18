@@ -2,6 +2,7 @@ from django.views.generic import TemplateView, FormView
 from django.forms.models import formset_factory
 from http.client import HTTPSConnection
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from .models import *
 from .forms import OfflineContentloadForm, BulkCourseForm
 from learn.models import Course, CourseTag, CourseProvider, DifficultyChoice, Instructor, Duration, LiveTraining
@@ -534,7 +535,7 @@ class OfflineImport(LoginRequiredMixin, TemplateView):
 
                         liveTraining = LiveTraining(course=course, max_students=max_students, min_students=min_students, session_count=session_count, prerequisites=prerequisites)
                         liveTraining.save()
-            return HttpResponseRedirect(self.get_success_url())
+            return redirect('learn:dashboard')
         else:  # form invalid
             return self.render_to_response(self.get_context_data(uploadform=OfflineContentloadForm(), formset=offc_formset, error=True))
 

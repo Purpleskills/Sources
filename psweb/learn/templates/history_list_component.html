@@ -4,8 +4,8 @@
         <article>
             <header class="g-my-15">
                 <h2 class="h4 g-mb-5">
-                    <span class="g-color-gray-dark-v1"><i class="icon-graduation g-color-green"></i> {{event.title}}</span> &nbsp;&nbsp;
-                    <a class="btn btn-sm u-btn-darkgreen g-rounded-50 g-mr-10 g-mb-15" href="#">{{event.courseuserrelation_set.first.completion_state}}</a>
+                    <span class="g-color-gray-dark-v1"><i class="icon-graduation g-color-brown"></i> {{event.title}}</span> &nbsp;&nbsp;
+                    <a class="btn btn-sm u-btn-mocha g-rounded-50 g-mr-10 g-mb-15" href="#">{{event.courseuserrelation_set.first.completion_state}}</a>
                 </h2>
             </header>
             <div class="d-lg-flex justify-content-between align-items-center">
@@ -41,11 +41,11 @@
             <div class="d-lg-flex g-my-20">
                 <ul class="list-inline g-mb-10 g-mb-0--lg">
                     <li class="list-inline-item g-mr-30">
-                        <button type="submit" class="savebutton btn btn-md u-btn-outline-darkgreen u-btn-hover-v1-1 g-font-weight-600 g-letter-spacing-0_5 text-uppercase rounded-0 g-mr-10 g-mb-15" name="save" id="id_save" data-course="{{event.id}}">
+                        <button type="submit" class="savebutton btn u-btn-darkgreen" name="save" id="id_save" data-course="{{event.id}}">
                             <i class="fa fa-check-circle g-mr-3"></i> Save changes</button>
                     </li>
                     <li class="list-inline-item g-mr-30">
-                        <button type="submit" class="removebutton btn btn-md u-btn-outline-darkgreen u-btn-hover-v1-1 g-font-weight-600 g-letter-spacing-0_5 text-uppercase rounded-0 g-mr-10 g-mb-15" name="remove" id="id_remove" data-course="{{event.id}}">
+                        <button type="submit" class="removebutton btn u-btn-darkgreen" name="remove" id="id_remove" data-course="{{event.id}}">
                             <i class="fa fa-times-circle g-mr-3"></i> Remove</button>
                     </li>
                 </ul>

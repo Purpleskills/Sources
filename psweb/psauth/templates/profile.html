@@ -6,8 +6,7 @@
 
 {% block content %}
     <div class="container g-py-40 g-px-100">
-        <h2>Profile</h2>
-        <h4>Name: {{user.first_name}} {{user.last_name}}</h4>
+        <h2>Name: {{user.first_name}} {{user.last_name}}</h2>
         <h4>Department: {{ user.department.name }}</h4>
         <p></p>
         <h4>You can select upto 3 skill goals and the desired difficulty levels.</h4>
@@ -37,7 +36,7 @@
                     {{ form.level_3|as_crispy_field }}
                 </div>
             </div>
-            <button type="submit" class="btn btn-dark">Save</button>
+            <button type="submit" class="btn u-btn-darkgreen">Save</button>
         </form>
     </div>
 {% endblock content %}
