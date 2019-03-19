@@ -7,7 +7,7 @@ class CourseFilterForm(forms.Form):
         # model = Course
         fields = ('difficulty', 'provider')
 
-    topic = forms.CharField(label='Topic', widget=forms.TextInput( attrs={ 'class': 'form-control g-px-30 g-py-13 basicAutoComplete'}))
+    topic = forms.CharField(label='Topic', widget=forms.TextInput( attrs={ 'class': 'form-control basicAutoComplete'}))
     difficulty = forms.ChoiceField(label='Difficulty', required=False,
                                          initial=DifficultyChoice.All.value, choices=[(tag.value, tag.name) for tag in DifficultyChoice],
                                          widget=forms.Select(attrs={'class': 'form-control'}))

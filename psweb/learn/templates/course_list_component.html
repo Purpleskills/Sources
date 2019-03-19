@@ -1,6 +1,6 @@
 {% for course in courses %}
     <div class="row align-content-md-start g-ml-15 g-mb-20">
-        <form method="post" class="scheduleform" data-schedule-url="{% url 'learn:ajax_schedule_courses' %}" novalidate>
+        <form method="post" class="scheduleform" data-schedule-url="{% url 'learn:ajax_schedule_courses' %}" style="width:100%;" novalidate>
         {% csrf_token %}
             <article>
                 <header class="g-mb-15">
@@ -42,10 +42,10 @@
                     <!--</div>-->
                 </div>
                 <div class="row d-lg-flex g-mt-20">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <input type="date" class="form-control" id="start_date" label="start date">  <!--value="{{placement.date|date:"Y-m-d" }}" -->
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-5">
                         <input id="duration" class="form-control" type="number" min="1" max="8" placeholder="training hours per day" />
                     </div>
                     <div class="col-md-3">

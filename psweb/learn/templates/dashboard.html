@@ -37,13 +37,17 @@
 </script>
 
 <script type="text/javascript">
+    function get_calendar_height() {
+          return $(window).height() - 100;
+    }
+
     function refresh_calendar(userid, calendar_slug){
         if (calendar_slug != "" ){
             $('#calendar').fullCalendar({
                 defaultView: 'listYear',
                 timeZone: 'UTC',
                 themeSystem: 'bootstrap4',
-                height: 300,
+                height: get_calendar_height,
                 header: {
                     left: 'today prev,next',
                     center: 'title',
@@ -59,6 +63,7 @@
             $('#calendar').fullCalendar({
                 defaultView: 'listYear',
                 timeZone: 'UTC',
+                height: get_calendar_height,
                 themeSystem: 'bootstrap4',
                 header: {
                     left: 'prev,next',
@@ -94,6 +99,10 @@
                 }, 0);
             }
         });
+
+        $(window).resize(function() {
+            $('#calendar').fullCalendar('option', 'height', get_calendar_height());
+        });
     });
     $("#filterform").submit(function(event){
         event.preventDefault(); //so that we stop normal form submit.
@@ -125,6 +134,7 @@
                 } else {
                     $("#course_list_div").html(data);
                 }
+                $('#calendar').fullCalendar('option', 'height', get_calendar_height());
             },
             error: function (erro) {
                 $("#course_list_div").html("<h3>Currently no available courses. Please check back later.</h3>");
@@ -186,14 +196,14 @@
                         <ul class="list-inline g-mb-10 g-mb-0--lg">
                         {% for ug in goals %}
                             <li class="list-inline-item g-mr-30"><a href="#" onclick="invokeSearch('{{ ug.skill_goal }}', {{ ug.difficulty}}); return false;">
-                                <span class="u-label g-rounded-3 g-bg-mocha buttonface-dark g-mr-10 g-mb-15"><i class="fa fa-binoculars g-mr-3"></i>
+                                <span class="u-label g-rounded-3 g-bg-lightmoss buttonface-dark g-mr-10 g-mb-15"><i class="fa fa-binoculars g-mr-3"></i>
                                     <strong>{{ ug.skill_goal }}</strong> - {{ ug.GetDifficultyName }}
                                 </span></a></li>
                         {% endfor %}
                         </ul>
                     </div>
-                    <div class="row">
-                        <form method="post" id="filterform" data-filter-url="{% url 'learn:ajax_load_courses' %}" novalidate>
+                    <div class="row" style="width:100%;">
+                        <form method="post" id="filterform" data-filter-url="{% url 'learn:ajax_load_courses' %}" style="width:100%;" novalidate>
                             {% csrf_token %}
                             <div class="row g-mb-20 justify-content-lg-start align-items-lg-baseline">
                                 <div class="col-xl-4"><strong>{{ form.topic.label }}<br /></strong> {{ form.topic }}</div>
@@ -205,19 +215,18 @@
                              </div>
                         </form>
                     </div>
+                    <div class="row">
+                        <div id="course_list_div" style="width:100%;">
+                            <h3><i class="fa fa-hand-o-up"></i>  Select from the above filtering criteria to see available courses</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-5">
-                <div class="card g-brd-gray-light-v7 g-pa-15 g-pa-25-30--md g-mb-10">
+            <div class="col-md-5" style="height:100%;">
+                <div class="card g-brd-gray-light-v7 g-pa-15 g-pa-25-30--md g-mb-10" style="height:100%;">
                     <div id="calendar" class="fc fc-bootstrap4 fc-ltr"></div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div id="course_list_div" class=" col-xl-8 g-px-15">
-                <h3><i class="fa fa-hand-o-up"></i>  Select from the above filtering criteria to see available courses</h3>
-            </div>
-
         </div>
 
     </div>
