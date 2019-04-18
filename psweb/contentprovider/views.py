@@ -17,15 +17,18 @@ import psycopg2
 import json
 import nltk
 from nltk.corpus import stopwords
-from owlready2 import *
 from functools import reduce
 from openpyxl import load_workbook
 import logging
+import os
+import time
+from owlready2 import get_ontology, onto_path
+
+onto_path.append(os.path.dirname(__file__))
+onto = get_ontology("CSO.owl")
 
 userAndPass = b64encode(b"GpxNVedkBslJE6CTga0f56iRG4vzzmYU24gzH0g5:FGMx5x8Vjr7LyBokikzIT9t4uFSSa30HMhMGcEHZBy38FV2snjwew0l9o3ctugs1KRcIvBQyZDidYKuMKrWUGHCA0qRNYMvFg859QhpatbpBPZW3QNAeJzpHBAYNkBoy").decode("ascii")
 headers = { 'Authorization' : 'Basic %s' %  userAndPass }
-onto_path.append(os.path.dirname(__file__))
-onto = get_ontology("CSO.owl")
 nltk.download(info_or_id='stopwords', download_dir=os.path.dirname(__file__))
 
 PLURALSIGHT_EXTRACTOR_VERSION = 1
@@ -529,7 +532,7 @@ class OfflineImport(LoginRequiredMixin, TemplateView):
                         if p_created:
                             newProvider.save()
                         course.provider = newProvider
-                        AddCourseTags(course)
+                        # AddCourseTags(course)
                         course.extractor_version = OFFLINE_EXTRACTOR_VERSION
                         course.save()
 

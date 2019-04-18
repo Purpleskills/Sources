@@ -33,3 +33,11 @@ To have a consistent theme across pages we are using bootstrap 4 and crispy form
 found here -> https://simpleisbetterthancomplex.com/tutorial/2018/08/13/how-to-use-bootstrap-4-forms-with-django.html
 
 A more detailed help on crispy form -> https://django-crispy-forms.readthedocs.io/en/latest/crispy_tag_forms.html
+
+Backup the database without all the raw data
+
+pg_dump -U psroot -T 'contentprovider*' purpleskillsdb > ps.db
+
+restore
+
+psql -U psroot -h aaa28032up74x5.cxgqbfuszhpq.ap-south-1.rds.amazonaws.com purpleskillsdb < ps.db

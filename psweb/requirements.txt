@@ -9,4 +9,5 @@ django-model-utils==3.1.2
 django_jchart
 nltk
 requests
-owlready2==0.13
+owlready2
+openpyxl
