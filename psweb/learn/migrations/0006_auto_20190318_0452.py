@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='course',
             name='difficulty',
-            field=models.SmallIntegerField(choices=[(0, core.models.DifficultyChoice(0)), (1, core.models.DifficultyChoice(1)), (2, core.models.DifficultyChoice(2)), (3, core.models.DifficultyChoice(3))]),
+            field=models.SmallIntegerField(choices=[(1, core.models.DifficultyChoice(1)), (2, core.models.DifficultyChoice(2)), (3, core.models.DifficultyChoice(3))]),
         ),
         migrations.AlterField(
             model_name='courseprovider',

@@ -38,6 +38,20 @@ Backup the database without all the raw data
 
 pg_dump -U psroot -T 'contentprovider*' purpleskillsdb > ps.db
 
-restore
+restore / reset database on local machine :
+1. service postgresql restart
+2. Drop purpleskillsdb
+3. in pgadmin create purpleskillsdb
+3. pg_restore -U psroot -d purpleskillsdb < ps.db
 
+restore / reset database on Amazon :
 psql -U psroot -h aaa28032up74x5.cxgqbfuszhpq.ap-south-1.rds.amazonaws.com purpleskillsdb < ps.db
+
+Tree support in django
+https://django-mptt.readthedocs.io/en/latest/install.html
+https://django-mptt.readthedocs.io/en/latest/tutorial.html
+https://stackoverflow.com/questions/26478858/how-to-populate-inherited-mptt-fields-while-creating-a-django-fixture
+
+Django Formset create and update:
+https://dev.to/zxenia/django-inline-formsets-with-class-based-views-and-crispy-forms-14o6
+https://github.com/philgyford/django-nested-inline-formsets-example/tree/master/publishing/books

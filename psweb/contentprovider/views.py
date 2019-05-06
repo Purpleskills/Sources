@@ -5,7 +5,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import OfflineContentloadForm, BulkCourseForm
-from learn.models import Course, CourseTag, CourseProvider, DifficultyChoice, Instructor, Duration, LiveTraining
+from core.models import DifficultyChoice, DurationChoice, Duration
+from learn.models import Course, CourseTag, CourseProvider, Instructor, LiveTraining
 from django.contrib.auth.mixins import LoginRequiredMixin
 from datetime import timedelta
 from django.utils import timezone

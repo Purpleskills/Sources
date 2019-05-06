@@ -34,7 +34,14 @@
                     {{ form.password2|as_crispy_field }}
                 </div>
             </div>
-            {{ form.company|as_crispy_field }}
+            <div class="row">
+                <div class="col-6">
+                    {{ form.org|as_crispy_field }}
+                </div>
+                <div class="col-6">
+                    {{ form.role|as_crispy_field }}
+                </div>
+            </div>
             <button type="submit" class="btn btn-dark">Sign up</button>
         </form>
         <h4 class="g-mt-40">Already have an account? <a href="/auth/login">Log in</a>.</h4>

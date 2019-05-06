@@ -1,0 +1,6 @@
+{% if myokrs.count == 0 %}
+    <h4>No OKRs have been set by you</h4>
+{% endif%}
+{% for okr in myokrs %}
+    <a href="#" onclick="editOKR('{{okr.id}}');">{{ okr.name }}</a> <br />
+{% endfor %}

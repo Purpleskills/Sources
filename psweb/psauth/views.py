@@ -1,8 +1,10 @@
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, ListView
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import *
+from .models import *
 
 class SignupView(TemplateView):
     template_name = 'signup.html'
@@ -20,18 +22,17 @@ class SignupView(TemplateView):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
+            employee_group = Group.objects.get(name='Employee')
+            employee_group.user_set.add(user)
+
             login(request, user)
-            return redirect('dashboard')
+            return redirect('learn:dashboard')
 
-class ProfileView (LoginRequiredMixin, FormView):
-    template_name = "profile.html"
-    form_class = ProfileForm
+class OrgListView(LoginRequiredMixin, ListView):
+    template_name = 'orgs_list.html'
+    model = Organization
+    paginate_by = 30
+    raise_exception = True
 
-    def get(self, request, *args, **kwargs):
-        form = ProfileForm(user=self.request.user)
-        return self.render_to_response(self.get_context_data(form=form))
-
-    def post(self, request, *args, **kwargs):
-        form = ProfileForm(request.POST, user=self.request.user)
-        form.save()
-        return redirect('learn:dashboard')
+    def get_queryset(self):
+        return Organization.objects.filter(company=self.request.user.org.company)

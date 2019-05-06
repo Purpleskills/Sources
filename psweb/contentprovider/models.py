@@ -1,5 +1,5 @@
 from django.db import models
-from learn.models import DifficultyChoice, Duration
+from core.models import DifficultyChoice, Duration
 
 class UdemyCourseCategory(models.Model):
     title = models.CharField(max_length=100)

@@ -1,0 +1,22 @@
+{% extends "homebase.html" %}
+{% load staticfiles %}
+{% load mptt_tags %}
+{% block title %} User Sign up {% endblock %}
+
+{% block content %}
+    <div class="container g-py-40 g-px-100">
+        <h2>Organization</h2>
+        <ul class="list-inline">
+            {% recursetree object_list %}
+                <li>
+                    {{ node.name }}
+                    {% if not node.is_leaf_node %}
+                        <ul class="children">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endrecursetree %}
+        </ul>
+    </div>
+{% endblock content %}

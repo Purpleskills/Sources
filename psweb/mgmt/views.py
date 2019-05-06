@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from jchart import Chart
 from jchart.config import Axes, DataSet, rgba
-from psauth.models import Department
+from psauth.models import Organization
 from schedule.models import Calendar, Event, Rule
 from django.db.models.functions import TruncMonth, ExtractMonth
 from django.db.models import Count
@@ -12,7 +12,7 @@ class PieChart(Chart):
     chart_type = 'pie'
 
     def get_labels(self, **kwargs):
-        depts = list(Department.objects.values_list('name', flat=True))
+        depts = list(Organization.objects.values_list('name', flat=True))
         return depts
 
     def get_datasets(self, **kwargs):

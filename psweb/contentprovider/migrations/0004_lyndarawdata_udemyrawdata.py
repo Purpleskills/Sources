@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import learn.models
+import core.models
 
 
 class Migration(migrations.Migration):
@@ -25,8 +25,8 @@ class Migration(migrations.Migration):
             name='UdemyRawData',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('level', models.SmallIntegerField(choices=[(learn.models.DifficultyChoice(0), 0), (learn.models.DifficultyChoice(1), 1), (learn.models.DifficultyChoice(2), 2), (learn.models.DifficultyChoice(3), 3)])),
-                ('duration', models.SmallIntegerField(choices=[(learn.models.Duration(('short', 2)), 2), (learn.models.Duration(('medium', 5)), 5), (learn.models.Duration(('long', 12)), 12), (learn.models.Duration(('extraLong', 22)), 22)])),
+                ('level', models.SmallIntegerField(choices=[(core.models.DifficultyChoice(1), 1), (core.models.DifficultyChoice(2), 2), (core.models.DifficultyChoice(3), 3)])),
+                ('duration', models.SmallIntegerField(choices=[(core.models.Duration(('short', 2)), 2), (core.models.Duration(('medium', 5)), 5), (core.models.Duration(('long', 12)), 12), (core.models.Duration(('extraLong', 22)), 22)])),
                 ('page', models.SmallIntegerField(default=0)),
                 ('raw_data', models.TextField()),
                 ('retrieved', models.DateTimeField(auto_now_add=True)),

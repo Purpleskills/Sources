@@ -6,22 +6,22 @@ from schedule.models import Event
 from model_utils.fields import StatusField
 from model_utils import Choices
 from core.models import DifficultyChoice
+from psauth.models import Company
 from django.utils import timezone
 
-class DurationChoice(Enum):
-    All = 0
-    CrashCourse = 1
-    GiveMeAFeel = 2
-    FullLength = 3
 
-class CourseStatus(Enum):
-    Active = "Active"
-    Complete = "Complete"
-class Duration(Enum):
-    Short = ('short', 2)
-    Medium = ('medium', 5)
-    Long = ('long', 12)
-    ExtraLong = ('extraLong', 22)
+# Company -> Role -> Objective1 ->Key result1 -> timeline , progress , fulfilment
+# |
+# v
+# Org -> Role -> Objective1 ->Key result1 -> timeline , progress , fulfilment
+# |
+# v
+# Group -> Role -> Objective1 ->Key result1 -> timeline , progress , fulfilment
+# |
+# v
+# IC -> Role -> Objective1 ->Key result1 -> timeline , progress , fulfilment
+
+
 
 LOGO_UPLOAD_TO = getattr(settings, 'LOGO_UPLOAD_TO', 'logo/')
 
@@ -75,6 +75,15 @@ class Course(models.Model):
     extractor_version = models.PositiveSmallIntegerField(default = 0)
     mode=models.PositiveSmallIntegerField(default=1) # 1=Online, 2=offline, 3=Mixed
 
+
+class LiveTraining(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.PROTECT)
+    max_students = models.SmallIntegerField(null=True)
+    min_students = models.SmallIntegerField(null=True)
+    session_count = models.SmallIntegerField(null=True)
+    prerequisites = models.TextField(null=True)
+
+
 class CourseUserRelation(models.Model):
     STATUS = Choices('Active', 'Complete', 'Abandoned', 'Ongoing')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
@@ -98,10 +107,20 @@ class CourseUserRelation(models.Model):
         if self.event.end_recurring_period < today:
             return "Abandoned"
 
+class Objective(models.Model):
+    company = models.ForeignKey (Company, on_delete=models.PROTECT)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    name = models.CharField(max_length=60)
+    # keyresults = models.ManyToManyField(KeyResult)
 
-class LiveTraining(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.PROTECT)
-    max_students = models.SmallIntegerField(null=True)
-    min_students = models.SmallIntegerField(null=True)
-    session_count = models.SmallIntegerField(null=True)
-    prerequisites = models.TextField(null=True)
+class KeyResult (models.Model):
+    def GetDifficultyName(self):
+        return {
+            1: "Beginner",
+            2: "Intermediate",
+            3: "Advanced"
+        }.get(self.difficulty, "For Everyone")
+    name = models.CharField(max_length=128)
+    objective = models.ForeignKey(Objective, on_delete=models.PROTECT)
+    difficulty = models.SmallIntegerField(choices=[(tag, tag.value) for tag in DifficultyChoice])
+    progressinpercent = models.DecimalField(decimal_places=2, max_digits=6, default=0)

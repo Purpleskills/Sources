@@ -1,0 +1,110 @@
+{% extends "homebase.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load mptt_tags %}
+
+{% block title %} User Settings {% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+function initFormData(){
+    /*$('.form-row.inline').formset({
+	    prefix: 'okr_set',
+    });*/
+    populateMyOKRs();
+}
+$(document).ready(initFormData);
+
+function updateFields (data){
+   // clearForm ($("#okr_form"));
+    $("#okr_form").html(data);
+    populateMyOKRs();
+}
+
+function clearForm(form) {
+  // iterate over all of the inputs for the form
+  // element that was passed in
+  $(':input', form).each(function() {
+    var type = this.type;
+    var tag = this.tagName.toLowerCase(); // normalize case
+    // it's ok to reset the value attr of text inputs,
+    // password inputs, and textareas
+    if (type == 'text' || type == 'password' || tag == 'textarea')
+      this.value = "";
+    // checkboxes and radios need to have their checked state cleared
+    // but should *not* have their 'value' changed
+    else if (type == 'checkbox' || type == 'radio')
+      this.checked = false;
+    // select elements need to have their 'selectedIndex' property set to -1
+    // (this works for both single and multiple select elements)
+    else if (tag == 'select')
+      this.selectedIndex = -1;
+  });
+};
+
+function populateMyOKRs(){
+    $.ajax({
+        url: '{% url 'learn:ajax_list_my_okr' %}',
+        type: "GET",
+        success: function (data) {
+            $("#myokr").html(data);
+        },
+        error: function (erro)  {
+            alert(erro.responseText);
+        }
+    });
+}
+
+$(document).on('submit','form', function() {
+    event.preventDefault();
+    var frm = $('#obj_form');
+    var objective = $("#id_name").val();
+    $.ajax({
+        url: '{% url 'learn:ajax_save_okr' %}',
+        type: "POST",
+        enctype: 'multipart/form-data',
+        data: frm.serialize(),
+        success: function (data) {
+            alert ("Successfully updated OKRs");
+            updateFields(data);
+        },
+        error: function (erro)  {
+            alert(erro.responseText);
+        }
+    });
+});
+
+</script>
+{% endblock %}
+
+{% block content %}
+    <div class="container g-py-40 g-px-100">
+        <h2>Name: {{user.first_name}} {{user.last_name}}</h2>
+        <h4>Department: {{ user.org.name }}</h4>
+        <p></p>
+        <div class="row">
+            <div class="col-md-8">
+                <h4>Select Objective</h4>
+                <div id="okr_form">{% crispy form %}</div>
+            </div>
+            <div class="col-md-4" style="padding-left:40px;">
+                <h2>Current OKRs</h2>
+                <div id="myokr"></div>
+                <hr/>
+                <h2>Organization OKRs</h2>
+                <ul class="list-inline">
+                    {% recursetree orgs %}
+                        <li>
+                            {{ node.name }}
+                            {% if not node.is_leaf_node %}
+                                <ul class="children">
+                                    {{ children }}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endrecursetree %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

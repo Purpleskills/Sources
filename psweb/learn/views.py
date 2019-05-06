@@ -1,13 +1,17 @@
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
+from django.http import HttpResponse
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 from django.views.generic.detail import View
 from django.shortcuts import redirect, render
-from .forms import *
+from extra_views  import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSetFactory
 import datetime
 from datetime import timedelta
-from django.contrib.auth.mixins import LoginRequiredMixin
 from schedule.models import Calendar, Event, Rule
-from psauth.models import UserGoals
-from django.http import HttpResponse
+from psauth.models import Organization
+from .forms import *
 import math
 import logging
 import operator
@@ -21,7 +25,7 @@ def load_courses(request):
     courses = Course.objects.filter(status=1)
     if len(topics) > 0:
         courses = courses.filter(reduce(operator.and_, (Q(title__icontains=x) for x in topics)))
-    if difficulty != "" and difficulty != DifficultyChoice.All.value:
+    if difficulty != "":
         courses = courses.filter(difficulty=difficulty)
     if duration == 1:
         courses = courses.filter(duration__lte=timedelta(hours=4))
@@ -31,7 +35,6 @@ def load_courses(request):
         courses = courses.filter(Q(duration__gt=timedelta(hours=15)))
 
     return render(request, 'course_list_component.html', {'courses': courses.order_by('title')[:10]})
-
 
 def init_calendar(request):
     user = request.user
@@ -144,8 +147,8 @@ class DashBoardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(DashBoardView, self).get_context_data(**kwargs)
 
-        ugs = UserGoals.objects.filter(user=self.request.user)
-        context["goals"] = ugs
+        okrs = Objective.objects.filter(user=self.request.user)
+        context["okrs"] = okrs
         return context
 
     def get(self, request, *args, **kwargs):
@@ -162,6 +165,7 @@ class  UserHistoryView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Event.objects.all().order_by('-end_recurring_period')
 
+
 class CourseFilterView (LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         results = {'success':False}
@@ -174,3 +178,107 @@ class CourseFilterView (LoginRequiredMixin, View):
 
         result_json = json.dumps(results)
         return HttpResponse(result_json, content_type='application/json')
+
+
+# class GoalSettingView (LoginRequiredMixin, FormView):
+#     template_name = "goalsetting.html"
+#     form_class = GoalSettingForm
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(GoalSettingView, self).get_context_data(**kwargs)
+#         context["orgs"] = Organization.objects.filter(company=self.request.user.org.company)
+#         context["goals"] = UserGoals.objects.filter(company=self.request.user.org.company)
+#         return context
+#
+#     def get(self, request, *args, **kwargs):
+#         form = GoalSettingForm(user=self.request.user)
+#         return self.render_to_response(self.get_context_data(form=form))
+#
+#     def post(self, request, *args, **kwargs):
+#         form = GoalSettingForm(request.POST, user=self.request.user)
+#         form.save()
+#         return redirect('learn:dashboard')
+
+class ObjectiveInline(InlineFormSetFactory):
+    model = Objective
+    fields = ['name']
+
+class KeyresultInline(InlineFormSetFactory):
+    model = KeyResult
+    fields = ['name', 'difficulty']
+
+class OKRSettingView (LoginRequiredMixin, CreateView):
+    model = Objective
+    form_class = ObjectiveForm
+    # inlines = [KeyresultInline ]
+    # fields = ['name']
+    template_name = 'goalsetting.html'
+    success_url = None
+    raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        context = super(OKRSettingView, self).get_context_data(**kwargs)
+        context["orgs"] = Organization.objects.filter(company=self.request.user.org.company)
+        # if self.request.POST:
+        #     context['okrs'] = OKRFormSet(self.request.POST)
+        # else:
+        context['okrs'] = OKRFormSet()
+        return context
+
+    # def get_form_kwargs(self):
+    #     kwargs = super(OKRSettingView, self).get_form_kwargs()
+    #     kwargs['user'] = self.request.user
+    #     return kwargs
+
+    # def form_valid(self, form):
+    #     context = self.get_context_data()
+    #     okrs = context['okrs']
+    #     with transaction.atomic():
+    #         form.instance.user = self.request.user
+    #         form.instance.company = self.request.user.org.company
+    #         self.object = form.save()
+    #         if okrs.is_valid():
+    #             okrs.instance = self.object
+    #             okrs.save()
+    #     return super(OKRSettingView, self).form_valid(form)
+
+    # def get_success_url(self):
+    #     return reverse_lazy('learn:dashboard')  # , kwargs={'pk': self.object.pk}
+
+@csrf_exempt
+def save_okr (request):
+    user = request.user
+    errormsg = ""
+    try:
+        post = request.POST
+        ofs = OKRFormSet( post)
+        o_name = post.get('name')
+        if ( o_name == "" ):
+            errormsg += "Objective should be filled.\n"
+        kr_count = int(post.get("keyresult_set-TOTAL_FORMS"))
+        with transaction.atomic():
+            objective = Objective (name=o_name, user=user, company=user.org.company)
+            objective.save()
+            for index in range (0, kr_count):
+                kr_name = post.get ("keyresult_set-" + str(index) + "-name")
+                if (kr_name == None or kr_name == ""):
+                    errormsg += "Key result should be filled. ( entry no:" + str(index) + ")\n"
+                    raise ValueError(errormsg)
+                else:
+                    kr_difficulty = post.get ("keyresult_set-" + str(index) + "-difficulty")
+                    kr = KeyResult(name=kr_name, objective=objective, difficulty=kr_difficulty)
+                    kr.save()
+    except Exception as e:
+        if (errormsg == ""):
+            logging.getLogger('purpleskills').exception(
+                msg="save_okr: Failed to dave OKR: " + "objective=" + o_name + ";user=" + str(
+                    request.user.id) + "; msg=" + e.message)
+            return HttpResponse("Unable to save OKRs at the moment. Please try again.", status=500)
+        else:
+            return HttpResponse(errormsg, status=500)
+    return render(request, 'okr_include.html', {'form': ObjectiveForm(), 'okrs': OKRFormSet()})
+    # return HttpResponse("")
+
+def list_okr (request):
+    myokrs = Objective.objects.filter(user=request.user)
+    return render(request, 'okr_list_include.html', {'myokrs': myokrs})

@@ -6,5 +6,5 @@ app_name='auth'
 urlpatterns = [
     url(r'', include('django.contrib.auth.urls')),
     url(r'^signup/$', SignupView.as_view(), name='signup'),
-    url(r'^profile/$', ProfileView.as_view(), name='profile'),
+    url(r'^orgs/$', OrgListView.as_view(), name='orgs-list'),
 ]

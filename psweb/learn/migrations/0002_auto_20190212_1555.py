@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='course',
             name='difficulty',
-            field=models.SmallIntegerField(choices=[(learn.models.DifficultyChoice(0), 0), (learn.models.DifficultyChoice(1), 1), (learn.models.DifficultyChoice(2), 2), (learn.models.DifficultyChoice(3), 3)], default=1),
+            field=models.SmallIntegerField(choices=[(learn.models.DifficultyChoice(1), 1), (learn.models.DifficultyChoice(2), 2), (learn.models.DifficultyChoice(3), 3)], default=1),
             preserve_default=False,
         ),
         migrations.AlterField(
