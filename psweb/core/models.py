@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import Enum, IntEnum
 
-class DifficultyChoice(Enum):
+class DifficultyChoice(IntEnum):
     Beginner = 1
     Intermediate = 2
     Advanced = 3

@@ -1,2 +1,23 @@
-{% load crispy_forms_tags %}
-{% crispy form %}
+<h4>Select Objective</h4>
+{{ form }}
+<h4>Add Keyresults</h4>
+<table class="col-md-12" style="margin: 10px;">
+    {{ formset.management_form }}
+
+    {% for form in formset.forms %}
+        <tr class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
+            {% for field in form.visible_fields %}
+            <td>
+                {# Include the hidden fields in the form #}
+                {% if forloop.first %}
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                {% endif %}
+                {{ field }}
+            </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+
+</table>

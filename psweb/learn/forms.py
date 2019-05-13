@@ -6,7 +6,7 @@ from extra_views import  InlineFormSet
 from core.models import DifficultyChoice, DurationChoice, Duration
 from core.custom_layout_object import *
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Fieldset, Div, HTML, ButtonHolder, Submit
+from crispy_forms.layout import Layout, Field, Fieldset, Div, HTML, ButtonHolder, Submit, Hidden
 
 class CourseFilterForm(forms.Form):
     class Meta:
@@ -81,7 +81,8 @@ class ObjectiveFormHelper(FormHelper):
         self.layout = Layout(
             Div(
                 Field('name'),
-                Fieldset('Add Key result',
+                Hidden('objid', ""),
+                Fieldset('Add Key results',
                          Formset('okrs')),
                 HTML("<br>"),
                 ButtonHolder(Submit('submit', 'save', css_class = "savebutton")),
@@ -93,43 +94,29 @@ class ObjectiveFormHelper(FormHelper):
 class ObjectiveForm (ModelForm):
     class Meta:
         model = Objective
-        exclude = ('user', 'company')
+        exclude = ('user', 'company',)
 
+    id = forms.IntegerField(widget=forms.HiddenInput)
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
+        # self.company = self.user.org.company
         super(ObjectiveForm, self).__init__(*args, **kwargs)
-        self.helper = ObjectiveFormHelper()
-
-        # self.helper = FormHelper()
-        # self.helper.form_tag = True
-        # self.helper.form_class = 'form-horizontal'
-        # self.helper.form_id = 'obj_form'
-        # self.helper.label_class = 'col-md-2 create-label'
-        # self.helper.field_class = 'col-md-10'
-        # self.helper.layout = Layout(
-        #     Div(
-        #         Field('name'),
-        #         Fieldset('Add Key result',
-        #                  Formset('okrs')),
-        #         HTML("<br>"),
-        #         ButtonHolder(Submit('submit', 'save', css_class = "savebutton")),
-        #     )
-        # )
+        # self.helper = ObjectiveFormHelper()
+        # if "id" in self.initial:
+        #     self.helper.layout.fields[0].fields[1].value = self.initial["id"]
 
 
 class KeyresultForm(ModelForm):
     class Meta:
         model = KeyResult
-        exclude = ('objective', 'progressinpercent')
+        exclude = ('progressinpercent',)
 
     difficulty = forms.ChoiceField(label='Difficulty level', required=False,
                                 initial=DifficultyChoice.Beginner.value, choices=[(tag.value, tag.name) for tag in DifficultyChoice],
                                 widget=forms.Select(attrs={'class': 'form-control'}))
 
 
-OKRFormSet = inlineformset_factory(Objective, KeyResult, form=KeyresultForm, fields=['name', 'difficulty'], extra=1, can_delete=True)
+OKRFormSet = inlineformset_factory(Objective, KeyResult, form=KeyresultForm, extra=1, can_delete=True)
 
-# class OKRInline(InlineFormSet):
-#     model = KeyResult
-#     fields = "__all__"
+
 

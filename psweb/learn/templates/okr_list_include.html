@@ -1,6 +1,22 @@
-{% if myokrs.count == 0 %}
-    <h4>No OKRs have been set by you</h4>
-{% endif%}
-{% for okr in myokrs %}
-    <a href="#" onclick="editOKR('{{okr.id}}');">{{ okr.name }}</a> <br />
+{% load customfilters %}
+{%for chain in chains %}
+    {% with okrs=allokrs|lookup:chain %}
+        {% with owner=orgs|lookup:chain %}
+            {% ifequal owner.id user.id %}
+                <h4>You</h4>
+            {% else%}
+                <h4>{{owner.email}} - {{owner.org.name}} </h4>
+            {% endifequal%}
+            {% if okrs.count == 0 %}
+                <h4>No OKRs have been set so far</h4>
+            {% endif%}
+            {% for okr in okrs %}
+                {% ifequal owner.id user.id %}
+                    <a href="/learn/okr/update/{{okr.id}}">{{ okr.name }}</a> <br />
+                {% else%}
+                    {{ okr.name }} <br />
+                {% endifequal%}
+            {% endfor %}
+        {% endwith %}
+    {% endwith %}
 {% endfor %}

@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^$', DashBoardView.as_view(), name='dashboard'),
     url(r'^history/$', UserHistoryView.as_view(), name='user-history'),
     url(r'^okr/$', OKRSettingView.as_view(), name='okr-set'),
+    url(r'^okr/update/(?P<pk>\d+)$', OKRSettingUpdateView.as_view(), name='okr-update'),
 
     url(r'^ajax/topic/autocomplete/$', CourseFilterView.as_view(), name='ajax_tpic_filter'),
     url(r'^ajax/load_courses/$', load_courses, name='ajax_load_courses'),

@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.views.generic.detail import View
 from django.shortcuts import redirect, render
 from extra_views  import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSetFactory
@@ -210,8 +210,6 @@ class KeyresultInline(InlineFormSetFactory):
 class OKRSettingView (LoginRequiredMixin, CreateView):
     model = Objective
     form_class = ObjectiveForm
-    # inlines = [KeyresultInline ]
-    # fields = ['name']
     template_name = 'goalsetting.html'
     success_url = None
     raise_exception = True
@@ -220,19 +218,21 @@ class OKRSettingView (LoginRequiredMixin, CreateView):
         context = super(OKRSettingView, self).get_context_data(**kwargs)
         context["orgs"] = Organization.objects.filter(company=self.request.user.org.company)
         # if self.request.POST:
-        #     context['okrs'] = OKRFormSet(self.request.POST)
+        #     context['formset'] = OKRFormSet(self.request.POST)
         # else:
-        context['okrs'] = OKRFormSet()
+        #     context["formset"] = OKRFormSet()
+        context['formset'] = OKRFormSet()
         return context
 
-    # def get_form_kwargs(self):
-    #     kwargs = super(OKRSettingView, self).get_form_kwargs()
-    #     kwargs['user'] = self.request.user
-    #     return kwargs
+    def get_form_kwargs(self):
+        kwargs = super(OKRSettingView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        # kwargs['company'] = self.request.user.org.company
+        return kwargs
 
     # def form_valid(self, form):
     #     context = self.get_context_data()
-    #     okrs = context['okrs']
+    #     okrs = context['formset']
     #     with transaction.atomic():
     #         form.instance.user = self.request.user
     #         form.instance.company = self.request.user.org.company
@@ -240,45 +240,134 @@ class OKRSettingView (LoginRequiredMixin, CreateView):
     #         if okrs.is_valid():
     #             okrs.instance = self.object
     #             okrs.save()
-    #     return super(OKRSettingView, self).form_valid(form)
-
+    #             return super(OKRSettingView, self).form_valid(form)
+    #         else:
+    #             return super(OKRSettingView, self).form_invalid(form)
+    #
     # def get_success_url(self):
-    #     return reverse_lazy('learn:dashboard')  # , kwargs={'pk': self.object.pk}
+    #     return reverse_lazy('learn:okr-set')  # , kwargs={'pk': self.object.pk}
 
 @csrf_exempt
 def save_okr (request):
     user = request.user
+    o_name = request.POST.get('name')
+    errormsg =""
+    post = request.POST
+    o_id = post.get('id')
+    if o_id == "":
+        errormsg = create_okr (post, user)
+    else:
+        errormsg = update_okr(o_id, post, user)
+    if (errormsg != ""):
+        return HttpResponse(errormsg, status=500)
+
+    return render(request, 'okr_include.html', {'form': ObjectiveForm(), 'formset': OKRFormSet()})
+    # return HttpResponse("")
+
+def create_okr (post, user):
     errormsg = ""
     try:
-        post = request.POST
-        ofs = OKRFormSet( post)
         o_name = post.get('name')
-        if ( o_name == "" ):
+        if (o_name == ""):
             errormsg += "Objective should be filled.\n"
         kr_count = int(post.get("keyresult_set-TOTAL_FORMS"))
-        with transaction.atomic():
-            objective = Objective (name=o_name, user=user, company=user.org.company)
-            objective.save()
-            for index in range (0, kr_count):
-                kr_name = post.get ("keyresult_set-" + str(index) + "-name")
-                if (kr_name == None or kr_name == ""):
-                    errormsg += "Key result should be filled. ( entry no:" + str(index) + ")\n"
-                    raise ValueError(errormsg)
-                else:
-                    kr_difficulty = post.get ("keyresult_set-" + str(index) + "-difficulty")
-                    kr = KeyResult(name=kr_name, objective=objective, difficulty=kr_difficulty)
-                    kr.save()
+        objective = Objective(name=o_name, user=user, company=user.org.company)
+        objective.save()
+        for index in range(0, kr_count):
+            kr_name = post.get("keyresult_set-" + str(index) + "-name")
+            if (kr_name == None or kr_name == ""):
+                errormsg += "Key result fields should be filled. You should add at least 1 key result."
+                raise ValueError(errormsg)
+            else:
+                kr_difficulty = post.get("keyresult_set-" + str(index) + "-difficulty")
+                kr = KeyResult(name=kr_name, objective=objective, difficulty=kr_difficulty)
+                kr.save()
     except Exception as e:
         if (errormsg == ""):
             logging.getLogger('purpleskills').exception(
-                msg="save_okr: Failed to dave OKR: " + "objective=" + o_name + ";user=" + str(
-                    request.user.id) + "; msg=" + e.message)
-            return HttpResponse("Unable to save OKRs at the moment. Please try again.", status=500)
+                msg="save_okr: Failed to save OKR: " + "objective=" + o_name + "; user=" + str(
+                    user.id) + "; msg=" + e.message)
+        errormsg = "Create failed. Pease try again."
+    return errormsg
+
+def update_okr(o_id, post, user):
+    errormsg = ""
+    try:
+        objective = Objective.objects.get(pk=o_id)
+        o_name = post.get('name')
+        objective.name = o_name
+        kr_count = int(post.get("keyresult_set-TOTAL_FORMS"))
+        new_krs = []
+        old_krs = objective.keyresult_set.filter (objective=objective)
+        old_kr_ids = list(old_krs.values_list('id', flat=True))
+        for index in range(0, kr_count):
+            kr_name = post.get("keyresult_set-" + str(index) + "-name")
+            if (kr_name != None and kr_name != ""): # ignore empty KRs
+                kr_difficulty = int(post.get("keyresult_set-" + str(index) + "-difficulty"))
+                id_str = post.get("keyresult_set-" + str(index) + "-id")
+                kr_id = int(id_str) if id_str.isdigit() else 0
+                kr_delete = post.get("keyresult_set-" + str(index) + "-DELETE")
+                if kr_delete == 'on':  #marked for delete
+                    continue
+                if kr_id in old_kr_ids: # update
+                    old_kr = old_krs.get(id=kr_id)
+                    old_kr.name = kr_name
+                    old_kr.difficulty = kr_difficulty
+                    new_krs.append(old_kr)
+                    old_kr_ids.remove(kr_id)
+                else: # insert new
+                    new_krs.append(KeyResult(name=kr_name, objective=objective, difficulty=kr_difficulty))
+        if len (old_kr_ids) > 0:  # some old KRs that user deleted during update
+            discarded_kr = old_krs.filter(id__in=old_kr_ids)
+            discarded_kr.delete()
+        if len(new_krs) > 0:
+            for kr in new_krs:
+                kr.save()
+            objective.save()
         else:
-            return HttpResponse(errormsg, status=500)
-    return render(request, 'okr_include.html', {'form': ObjectiveForm(), 'okrs': OKRFormSet()})
-    # return HttpResponse("")
+            errormsg = "Key result fields should be filled. You should add at least 1 key result."
+            raise ValueError(errormsg)
+    except Objective.DoesNotExist:
+        errormsg += "Objective is not found in the database. Please create a new one."
+        pass
+    except Exception as e:
+        if (errormsg == ""):
+            logging.getLogger('purpleskills').exception(
+                msg="save_okr: Failed to update OKR: " + "objective=" + o_name + "; user=" + str(
+                    user.id) + "; msg=" + e.message)
+            errormsg ="Update failed. Pease try again."
+
+    return errormsg
+
+
+class OKRSettingUpdateView(LoginRequiredMixin, UpdateView):
+    model = Objective
+    form_class = ObjectiveForm
+    template_name = 'goalsetting.html'
+    success_url = None
+    raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        context = super(OKRSettingUpdateView, self).get_context_data(**kwargs)
+        context["orgs"] = Organization.objects.filter(company=self.request.user.org.company)
+        context['formset'] = OKRFormSet(instance=self.object)
+        return context
+
 
 def list_okr (request):
-    myokrs = Objective.objects.filter(user=request.user)
-    return render(request, 'okr_list_include.html', {'myokrs': myokrs})
+    myorg = request.user.org
+    parent = request.user.org.parent
+    org_chain_ids = []
+    orgs = {}
+    okrs = {}
+    while True:
+        org_chain_ids.append(parent.owner.id)
+        orgs[parent.owner.id] = parent.owner
+        parent = parent.parent
+        if parent == None:
+            break
+
+    allokrs = Objective.objects.filter(user__in = org_chain_ids)
+    for id in org_chain_ids:
+        okrs[id] = allokrs.filter(user_id=id)
+    return render(request, 'okr_list_include.html', {'allokrs': okrs, 'user':request.user, "chains": org_chain_ids, "orgs": orgs})
