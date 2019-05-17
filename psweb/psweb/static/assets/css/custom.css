@@ -20,6 +20,11 @@
 /*-----------------------------------  text -----------------------------*/
 .table-header { font-weight:bold; }
 
+.table-spaced {
+    border-collapse:separate;
+    border-spacing:0 15px;
+}
+.row1 { color:red;}
 /*--------------------------------------  buttons -----------------------------*/
 /* Outline Button mocha */
 .u-btn-mocha {

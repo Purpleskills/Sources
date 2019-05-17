@@ -1,22 +1,14 @@
 {% load customfilters %}
-{%for chain in chains %}
-    {% with okrs=allokrs|lookup:chain %}
-        {% with owner=orgs|lookup:chain %}
-            {% ifequal owner.id user.id %}
-                <h4>You</h4>
-            {% else%}
-                <h4>{{owner.email}} - {{owner.org.name}} </h4>
-            {% endifequal%}
-            {% if okrs.count == 0 %}
-                <h4>No OKRs have been set so far</h4>
-            {% endif%}
-            {% for okr in okrs %}
-                {% ifequal owner.id user.id %}
-                    <a href="/learn/okr/update/{{okr.id}}">{{ okr.name }}</a> <br />
-                {% else%}
-                    {{ okr.name }} <br />
-                {% endifequal%}
+{% if okrs.count == 0 %}
+    <h4>No OKRs have been set so far</h4>
+{% endif%}
+{% for okr in okrs %}
+    <ul>
+        <li><a href="/learn/okr/update/{{okr.id}}">{{ okr.name }}</a> <a href="#" data-okr-id="{{okr.id}}" class="o_del"><i class="icon-trash g-ml-20"></i></a></li>
+        <ul>
+            {% for kr in okr.keyresult_set.all %}
+                <li>{{ kr.name }}</li>
             {% endfor %}
-        {% endwith %}
-    {% endwith %}
+        </ul>
+    </ul>
 {% endfor %}

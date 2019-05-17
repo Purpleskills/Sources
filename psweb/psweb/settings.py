@@ -60,7 +60,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
-    'extra_views',
+    'widget_tweaks',
     'djmoney',
     'schedule',
     'jchart',

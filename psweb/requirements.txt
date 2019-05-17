@@ -13,4 +13,5 @@ owlready2
 openpyxl
 django-js-asset==1.2.2
 django-mptt==0.10.0
-django-extra-views==0.12.0
+# django-extra-views==0.12.0
+django-widget-tweaks==1.4.3

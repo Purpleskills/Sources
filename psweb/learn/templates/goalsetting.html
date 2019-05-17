@@ -1,14 +1,35 @@
 {% extends "homebase.html" %}
 {% load staticfiles %}
-{% load crispy_forms_tags %}
+{% load widget_tweaks %}
 {% load mptt_tags %}
 
 {% block title %} User Settings {% endblock %}
-{% block  extra_js %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'assets/css/custom.css'%}">
+{% endblock %}
 
+{% block  extra_js %}
 {% endblock %}
 {% block js %}
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript">
+var app2 = new Vue({
+    delimiters: ['[[', ']]'],
+    el: '#user_name',
+    data: {
+        name: 'namaskar!'
+    }
+});
+
+var app = new Vue({
+    delimiters: ['[[', ']]'],
+    el: '#app',
+    data: {
+        message: 'Hello Vue!'
+    }
+})
+</script>
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
 <script src="{% static 'assets/js/jquery.formset_n.js' %}"></script>
 <script type="text/javascript">
 function initFormset(){
@@ -32,34 +53,11 @@ function updateFormFields (data){
     populateMyOKRs();
 }
 
-function clearForm(form) {
-  // iterate over all of the inputs for the form
-  // element that was passed in
-  $(':input', form).each(function() {
-    var type = this.type;
-    var tag = this.tagName.toLowerCase(); // normalize case
-    // it's ok to reset the value attr of text inputs,
-    // password inputs, and textareas
-    if (type == 'text' || type == 'password' || tag == 'textarea')
-      this.value = "";
-    // checkboxes and radios need to have their checked state cleared
-    // but should *not* have their 'value' changed
-    else if (type == 'checkbox' || type == 'radio')
-      this.checked = false;
-    // select elements need to have their 'selectedIndex' property set to -1
-    // (this works for both single and multiple select elements)
-    else if (tag == 'select')
-      this.selectedIndex = -1;
-  });
-};
-
-function editOKR(okrid) {
-}
-
 function populateMyOKRs(){
     $.ajax({
         url: '{% url 'learn:ajax_list_my_okr' %}',
         type: "GET",
+        dataType: "html",
         success: function (data) {
             $("#myokr").html(data);
         },
@@ -87,6 +85,24 @@ $(document).on('submit','form', function() {
         }
     });
 });
+$(document).on('click', '.o_del', function() {
+    if (confirm('Are you sure ?')) {
+        var okrid = $(this).attr("data-okr-id");
+        $.ajax({
+            url: '{% url 'learn:ajax_del_okr' %}',
+            data: {
+                'okrid': okrid
+            },
+            dataType: "text",
+            success: function (data) {
+                alert ("Successfully deleted OKR");
+                populateMyOKRs();
+            },
+            error: function (erro) {
+                alert("Delete failed. Please try again later.");
+            }
+        });
+    } });
 
 </script>
 {% endblock %}
@@ -105,9 +121,22 @@ $(document).on('submit','form', function() {
             {% csrf_token %}
                 <div id="okr_form">
                     <h4>Select Objective</h4>
-                    {{ form }}
+                    {% for hidden in form.hidden_fields %}
+                      {{ hidden }}
+                    {% endfor %}
+
+                    {% for field in form.visible_fields %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field|add_class:'form-control' }}
+                            {% for error in field.errors %}
+                                <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
                     <h4>Add Keyresults</h4>
-                    <table class="col-md-12" style="margin: 10px;">
+                    <table class="col-md-12 table-spaced">
                         {{ formset.management_form }}
 
                         {% for form in formset.forms %}
@@ -120,7 +149,8 @@ $(document).on('submit','form', function() {
                                             {{ hidden }}
                                         {% endfor %}
                                     {% endif %}
-                                    {{ field }}
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field|add_class:'form-control' }}
                                 </td>
                                 {% endfor %}
                             </tr>
@@ -134,20 +164,6 @@ $(document).on('submit','form', function() {
             <div class="col-md-4" style="padding-left:40px;">
                 <h2>Current OKRs</h2>
                 <div id="myokr"></div>
-                <hr/>
-                <h2>Organization</h2>
-                <ul class="list-inline">
-                    {% recursetree orgs %}
-                        <li>
-                            {{ node.name }}
-                            {% if not node.is_leaf_node %}
-                                <ul class="children">
-                                    {{ children }}
-                                </ul>
-                            {% endif %}
-                        </li>
-                    {% endrecursetree %}
-                </ul>
             </div>
         </div>
     </div>

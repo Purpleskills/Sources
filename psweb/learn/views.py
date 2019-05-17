@@ -6,7 +6,6 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.views.generic.detail import View
 from django.shortcuts import redirect, render
-from extra_views  import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSetFactory
 import datetime
 from datetime import timedelta
 from schedule.models import Calendar, Event, Rule
@@ -17,6 +16,8 @@ import logging
 import operator
 from django.db.models import Q
 from functools import reduce
+import json
+import mptt
 
 def load_courses(request):
     topics = request.GET.get('topic').split()
@@ -180,33 +181,6 @@ class CourseFilterView (LoginRequiredMixin, View):
         return HttpResponse(result_json, content_type='application/json')
 
 
-# class GoalSettingView (LoginRequiredMixin, FormView):
-#     template_name = "goalsetting.html"
-#     form_class = GoalSettingForm
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(GoalSettingView, self).get_context_data(**kwargs)
-#         context["orgs"] = Organization.objects.filter(company=self.request.user.org.company)
-#         context["goals"] = UserGoals.objects.filter(company=self.request.user.org.company)
-#         return context
-#
-#     def get(self, request, *args, **kwargs):
-#         form = GoalSettingForm(user=self.request.user)
-#         return self.render_to_response(self.get_context_data(form=form))
-#
-#     def post(self, request, *args, **kwargs):
-#         form = GoalSettingForm(request.POST, user=self.request.user)
-#         form.save()
-#         return redirect('learn:dashboard')
-
-class ObjectiveInline(InlineFormSetFactory):
-    model = Objective
-    fields = ['name']
-
-class KeyresultInline(InlineFormSetFactory):
-    model = KeyResult
-    fields = ['name', 'difficulty']
-
 class OKRSettingView (LoginRequiredMixin, CreateView):
     model = Objective
     form_class = ObjectiveForm
@@ -216,7 +190,7 @@ class OKRSettingView (LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(OKRSettingView, self).get_context_data(**kwargs)
-        context["orgs"] = Organization.objects.filter(company=self.request.user.org.company)
+        # context["orgs"] = Organization.objects.filter(company=self.request.user.org.company)
         # if self.request.POST:
         #     context['formset'] = OKRFormSet(self.request.POST)
         # else:
@@ -250,8 +224,6 @@ class OKRSettingView (LoginRequiredMixin, CreateView):
 @csrf_exempt
 def save_okr (request):
     user = request.user
-    o_name = request.POST.get('name')
-    errormsg =""
     post = request.POST
     o_id = post.get('id')
     if o_id == "":
@@ -349,25 +321,24 @@ class OKRSettingUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(OKRSettingUpdateView, self).get_context_data(**kwargs)
-        context["orgs"] = Organization.objects.filter(company=self.request.user.org.company)
+        # context["orgs"] = Organization.objects.filter(company=self.request.user.org.company)
         context['formset'] = OKRFormSet(instance=self.object)
         return context
 
 
 def list_okr (request):
-    myorg = request.user.org
-    parent = request.user.org.parent
-    org_chain_ids = []
-    orgs = {}
-    okrs = {}
-    while True:
-        org_chain_ids.append(parent.owner.id)
-        orgs[parent.owner.id] = parent.owner
-        parent = parent.parent
-        if parent == None:
-            break
+    allokrs = Objective.objects.filter(user = request.user)
+    return render(request, 'okr_list_include.html', {'okrs': allokrs, 'user':request.user} )
 
-    allokrs = Objective.objects.filter(user__in = org_chain_ids)
-    for id in org_chain_ids:
-        okrs[id] = allokrs.filter(user_id=id)
-    return render(request, 'okr_list_include.html', {'allokrs': okrs, 'user':request.user, "chains": org_chain_ids, "orgs": orgs})
+def delete_okr (request):
+    user = request.user
+    oid = request.GET.get('okrid')
+    errormsg = ""
+    try:
+        obj = Objective.objects.get(pk=oid)
+        obj.keyresult_set.all().delete()
+        obj.delete()
+    except Objective.DoesNotExist:
+        return HttpResponse("OKR object not found", status=500)
+
+    return HttpResponse("")
