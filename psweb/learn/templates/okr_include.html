@@ -7,7 +7,7 @@
 {% for field in form.visible_fields %}
     <div class="form-group">
         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field|add_class:'form-control' }}
+        {{ field|add_class:'form-control hint' }}
         {% for error in field.errors %}
             <span class="help-block">{{ error }}</span>
         {% endfor %}
@@ -29,7 +29,7 @@
                     {% endfor %}
                 {% endif %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:'form-control' }}
+                {{ field|add_class:'form-control krhint'|attr:"data-src:2" }}
             </td>
             {% endfor %}
         </tr>

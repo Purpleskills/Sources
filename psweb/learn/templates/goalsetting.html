@@ -25,7 +25,7 @@ function initFormset(){
 }
 
 function setupAutoComplete(){
-    $("#id_name").autocomplete({
+    $("input.hint").autocomplete({
         source: "{% url 'learn:ajax_hint_objective' %}",
         minLength: 2,
         open: function(){
@@ -33,7 +33,16 @@ function setupAutoComplete(){
                 $('.ui-autocomplete').css('z-index', 99);
             }, 0);
         }
-      });
+    });
+    $("input.krhint").autocomplete({
+        source: "{% url 'learn:ajax_hint_kr' %}",
+        minLength: 2,
+        open: function(){
+            setTimeout(function () {
+                $('.ui-autocomplete').css('z-index', 99);
+            }, 0);
+        }
+    });
 }
 
 function initFormData(){
@@ -122,7 +131,7 @@ $(document).on('click', '.o_del', function() {
                     {% for field in form.visible_fields %}
                         <div class="form-group">
                             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            {{ field|add_class:'form-control' }}
+                            {{ field|add_class:'form-control hint'|attr:"data-src:1" }}
                             {% for error in field.errors %}
                                 <span class="help-block">{{ error }}</span>
                             {% endfor %}
@@ -144,7 +153,7 @@ $(document).on('click', '.o_del', function() {
                                         {% endfor %}
                                     {% endif %}
                                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                    {{ field|add_class:'form-control' }}
+                                    {{ field|add_class:'form-control krhint'|attr:"data-src:2" }}
                                 </td>
                                 {% endfor %}
                             </tr>

@@ -2,7 +2,7 @@ from django.views.generic import TemplateView, ListView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import HttpResponse
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, resolve
 from django.views.generic import CreateView, UpdateView
 from django.views.generic.detail import View
 from django.shortcuts import redirect, render
@@ -375,8 +375,12 @@ def delete_okr (request):
 
 def hint_objectives (request):
     if request.is_ajax():
+        mode = request.path_info[-1]
         q = request.GET.get('term', '')
-        results = list(Objective.objects.filter(name__icontains = q ).values_list('name', flat=True)[:20])
+        if mode == "2":
+            results = list(KeyResult.objects.filter(name__icontains=q).values_list('name', flat=True)[:20])
+        else:
+            results = list(Objective.objects.filter(name__icontains = q ).values_list('name', flat=True)[:20])
 
         data = json.dumps(results)
     else:
