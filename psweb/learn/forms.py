@@ -47,7 +47,7 @@ class CourseFilterForm(forms.Form):
 class ObjectiveForm (ModelForm):
     class Meta:
         model = Objective
-        exclude = ('user', 'company',)
+        exclude = ('user', 'company', 'tags')
 
     id = forms.IntegerField(widget=forms.HiddenInput)
     def __init__(self, *args, **kwargs):

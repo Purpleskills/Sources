@@ -5,31 +5,15 @@
 
 {% block title %} User Settings {% endblock %}
 {% block extra_css %}
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css" type="text/css" />
     <link rel="stylesheet" href="{% static 'assets/css/custom.css'%}">
 {% endblock %}
 
 {% block  extra_js %}
 {% endblock %}
 {% block js %}
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script type="text/javascript">
-var app2 = new Vue({
-    delimiters: ['[[', ']]'],
-    el: '#user_name',
-    data: {
-        name: 'namaskar!'
-    }
-});
-
-var app = new Vue({
-    delimiters: ['[[', ']]'],
-    el: '#app',
-    data: {
-        message: 'Hello Vue!'
-    }
-})
-</script>
 <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script src="{% static 'assets/vendor/jquery-ui/jquery-ui.min.js' %}"></script>
 <script src="{% static 'assets/js/jquery.formset_n.js' %}"></script>
 <script type="text/javascript">
 function initFormset(){
@@ -40,8 +24,21 @@ function initFormset(){
     });
 }
 
+function setupAutoComplete(){
+    $("#id_name").autocomplete({
+        source: "{% url 'learn:ajax_hint_objective' %}",
+        minLength: 2,
+        open: function(){
+            setTimeout(function () {
+                $('.ui-autocomplete').css('z-index', 99);
+            }, 0);
+        }
+      });
+}
+
 function initFormData(){
     initFormset();
+    setupAutoComplete();
     populateMyOKRs();
 }
 $(document).ready(initFormData);
@@ -109,9 +106,6 @@ $(document).on('click', '.o_del', function() {
 
 {% block content %}
     <div class="container g-py-40 g-px-100">
-        <div id="app">
-          [[ message ]]
-        </div>
         <h2 id="user_name">{{ user.first_name }} {{ user.last_name }}</h2>
         <h4>Department: {{ user.org.name }}</h4>
         <p></p>

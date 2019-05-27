@@ -1,7 +1,21 @@
+{% load widget_tweaks %}
 <h4>Select Objective</h4>
-{{ form }}
+{% for hidden in form.hidden_fields %}
+  {{ hidden }}
+{% endfor %}
+
+{% for field in form.visible_fields %}
+    <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field|add_class:'form-control' }}
+        {% for error in field.errors %}
+            <span class="help-block">{{ error }}</span>
+        {% endfor %}
+    </div>
+{% endfor %}
+
 <h4>Add Keyresults</h4>
-<table class="col-md-12" style="margin: 10px;">
+<table class="col-md-12 table-spaced">
     {{ formset.management_form }}
 
     {% for form in formset.forms %}
@@ -14,7 +28,8 @@
                         {{ hidden }}
                     {% endfor %}
                 {% endif %}
-                {{ field }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
             </td>
             {% endfor %}
         </tr>

@@ -10,6 +10,8 @@ import datetime
 from datetime import timedelta
 from schedule.models import Calendar, Event, Rule
 from psauth.models import Organization
+from core.models import CourseTag
+from core.tagmanager import generate_tags
 from .forms import *
 import math
 import logging
@@ -236,6 +238,30 @@ def save_okr (request):
     return render(request, 'okr_include.html', {'form': ObjectiveForm(), 'formset': OKRFormSet()})
     # return HttpResponse("")
 
+def analyze_okr (okr):
+    otags = generate_tags(okr.name)
+    for kr in okr.keyresult_set.all():
+        for tag in generate_tags(kr.name):
+            otags.append(tag)
+
+    for tag in otags:
+        okr.tags.add(tag)
+    # from nltk.corpus import stopwords
+    # stop_words = set(stopwords.words('english'))
+    # line = okr.name
+    # for kr in okr.keyresult_set.all():
+    #     line += " " + kr.name
+    # words = line.split()
+    # appendFile = open('filteredtext.txt', 'a')
+    # stopFile = open('stoppedtext.txt', 'a')
+    # for r in words:
+    #     if not r in stop_words:
+    #         appendFile.write(" " + r)
+    #     else:
+    #         stopFile.write(" " + r)
+    # appendFile.close()
+    # stopFile.close()
+
 def create_okr (post, user):
     errormsg = ""
     try:
@@ -254,11 +280,12 @@ def create_okr (post, user):
                 kr_difficulty = post.get("keyresult_set-" + str(index) + "-difficulty")
                 kr = KeyResult(name=kr_name, objective=objective, difficulty=kr_difficulty)
                 kr.save()
+        analyze_okr(objective)
     except Exception as e:
         if (errormsg == ""):
             logging.getLogger('purpleskills').exception(
                 msg="save_okr: Failed to save OKR: " + "objective=" + o_name + "; user=" + str(
-                    user.id) + "; msg=" + e.message)
+                    user.id) + "; msg=" + str(e))
         errormsg = "Create failed. Pease try again."
     return errormsg
 
@@ -299,6 +326,7 @@ def update_okr(o_id, post, user):
         else:
             errormsg = "Key result fields should be filled. You should add at least 1 key result."
             raise ValueError(errormsg)
+        analyze_okr(objective)
     except Objective.DoesNotExist:
         errormsg += "Objective is not found in the database. Please create a new one."
         pass
@@ -306,7 +334,7 @@ def update_okr(o_id, post, user):
         if (errormsg == ""):
             logging.getLogger('purpleskills').exception(
                 msg="save_okr: Failed to update OKR: " + "objective=" + o_name + "; user=" + str(
-                    user.id) + "; msg=" + e.message)
+                    user.id) + "; msg=" + str(e))
             errormsg ="Update failed. Pease try again."
 
     return errormsg
@@ -330,6 +358,7 @@ def list_okr (request):
     allokrs = Objective.objects.filter(user = request.user)
     return render(request, 'okr_list_include.html', {'okrs': allokrs, 'user':request.user} )
 
+
 def delete_okr (request):
     user = request.user
     oid = request.GET.get('okrid')
@@ -342,3 +371,16 @@ def delete_okr (request):
         return HttpResponse("OKR object not found", status=500)
 
     return HttpResponse("")
+
+
+def hint_objectives (request):
+    if request.is_ajax():
+        q = request.GET.get('term', '')
+        results = list(Objective.objects.filter(name__icontains = q ).values_list('name', flat=True)[:20])
+
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+

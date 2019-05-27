@@ -108,8 +108,8 @@ WSGI_APPLICATION = 'psweb.wsgi.application'
 ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL='psauth.CourseUser'
 LOGIN_URL = '/auth/login/'
-LOGIN_REDIRECT_URL='/home/'
-LOGOUT_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases

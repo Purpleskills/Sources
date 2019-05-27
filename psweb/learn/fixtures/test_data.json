@@ -14,7 +14,78 @@
             "domains":["federation.com", "federation.co.in"]
         }
     },
-
+    {
+        "pk": 1,
+        "model": "psauth.courseuser",
+        "fields": {
+            "first_name": "Amit",
+            "last_name": "Kripalani",
+            "email": "krips2@gmail.com",
+            "org": 1,
+            "role": 1,
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "phone": "9886489230",
+            "groups": [
+                [
+                    "Employee"
+                ]
+            ],
+            "user_permissions": [ ],
+            "username": "amit",
+            "password": "pbkdf2_sha256$100000$vzcBsFzEvfAp$QjTG22c91JDC8vk9KsRorm5pZR0BwG5Pn/eqi8iX//Q=",
+            "date_joined": "2019-05-19"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "psauth.courseuser",
+        "fields": {
+            "first_name": "Captain",
+            "last_name": "Picard",
+            "email": "picard@federation.com",
+            "org": 4,
+            "role": 5,
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "phone": "9886489230",
+            "groups": [
+                [
+                    "Manager"
+                ]
+            ],
+            "user_permissions": [ ],
+            "username": "picard",
+            "password": "pbkdf2_sha256$100000$vzcBsFzEvfAp$QjTG22c91JDC8vk9KsRorm5pZR0BwG5Pn/eqi8iX//Q=",
+            "date_joined": "2019-06-19"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "psauth.courseuser",
+        "fields": {
+            "first_name": "Captain",
+            "last_name": "Spock",
+            "email": "spock@federation.com",
+            "org": 1,
+            "role": 2,
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "phone": "9886489230",
+            "groups": [
+                [
+                    "Manager"
+                ]
+            ],
+            "user_permissions": [ ],
+            "username": "spock",
+            "password": "pbkdf2_sha256$100000$vzcBsFzEvfAp$QjTG22c91JDC8vk9KsRorm5pZR0BwG5Pn/eqi8iX//Q=",
+            "date_joined": "2018-06-19"
+        }
+    },
     { "pk": 1, "model": "psauth.organization", "fields": { "name": "Company", "company": 1, "parent":null, "level": 0, "lft": 1, "rght": 20, "tree_id": 1, "owner": 2 } },
     { "pk": 2, "model": "psauth.organization", "fields": { "name": "Products", "company": 1, "parent":1, "level": 1, "lft": 2, "rght": 9, "tree_id": 1, "owner": 2 } },
     { "pk": 3, "model": "psauth.organization", "fields": { "name": "Services", "company": 1, "parent":1, "level": 1, "lft": 10, "rght": 15, "tree_id": 1, "owner": 2  } },

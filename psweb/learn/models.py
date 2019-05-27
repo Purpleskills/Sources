@@ -5,7 +5,7 @@ from enum import Enum
 from schedule.models import Event
 from model_utils.fields import StatusField
 from model_utils import Choices
-from core.models import DifficultyChoice
+from core.models import DifficultyChoice, CourseTag
 from psauth.models import Company
 from django.utils import timezone
 
@@ -44,10 +44,6 @@ class Instructor(models.Model):
     name = models.CharField(max_length=256, unique=True)
     photo = models.URLField(null=True, default=None, blank=True)
     url = models.URLField(null=True, default=None, blank=True)
-
-class CourseTag(models.Model):
-    name = models.TextField()
-    priority = models.PositiveSmallIntegerField(default = 0)
 
 class Course(models.Model):
     def GetThumbFilename(self, filename):
@@ -111,7 +107,7 @@ class Objective(models.Model):
     company = models.ForeignKey (Company, on_delete=models.PROTECT)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=60)
-    # keyresults = models.ManyToManyField(KeyResult)
+    tags = models.ManyToManyField(CourseTag)
 
 class KeyResult (models.Model):
     def GetDifficultyName(self):

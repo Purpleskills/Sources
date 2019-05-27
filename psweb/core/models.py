@@ -1,4 +1,5 @@
 from enum import Enum, IntEnum
+from django.db import models
 
 class DifficultyChoice(IntEnum):
     Beginner = 1
@@ -20,3 +21,7 @@ class Duration(Enum):
 class CourseStatus(Enum):
     Active = "Active"
     Complete = "Complete"
+
+class CourseTag(models.Model):
+    name = models.TextField()
+    priority = models.PositiveSmallIntegerField(default=0)

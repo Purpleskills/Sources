@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^ajax/save/okr/$', save_okr, name='ajax_save_okr'),
     url(r'^ajax/del/okr/$', delete_okr, name='ajax_del_okr'),
     url(r'^ajax/list/myokr/$', list_okr, name='ajax_list_my_okr'),
+    url(r'^ajax/objective/hints/$', hint_objectives, name='ajax_hint_objective'),
 ]
