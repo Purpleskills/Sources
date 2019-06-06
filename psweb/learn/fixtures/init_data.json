@@ -2,5 +2,37 @@
     { "pk": 1, "model": "auth.group", "fields": { "name": "SuperAdmin", "permissions": [ ] } },
     { "pk": 2, "model": "auth.group", "fields": { "name": "Employee", "permissions": [ ] } },
     { "pk": 3, "model": "auth.group", "fields": { "name": "HR", "permissions": [ ] } },
-    { "pk": 4, "model": "auth.group", "fields": { "name": "Manager", "permissions": [ ] } }
+    { "pk": 4, "model": "auth.group", "fields": { "name": "Manager", "permissions": [ ] } },
+
+    { "pk": 1, "model": "learn.CourseProvider", "fields": {"name": "Udemy", "status": 1, "logo": "/media/logo/udemy_logo.svg", "url": "https://www.udemy.com" }  },
+    { "pk": 2, "model": "learn.CourseProvider", "fields": {"name": "Lynda", "status": 1, "logo": "/media/logo/lynda-linkedin-logo.jpg", "url": "https://www.lynda.com"}  },
+    { "pk": 3, "model": "learn.CourseProvider", "fields": {"name": "PluralSight", "status": 1, "logo": "/media/logo/pluralsight_logo.png", "url": "https://www.pluralsight.com/courses"}  },
+    { "pk": 4, "model": "learn.CourseProvider", "fields": {"name": "Coursera", "status": 1, "logo": "/media/logo/coursera_logo.svg", "url": "https://www.coursera.org/learn"}  },
+
+
+    {
+        "pk": 1,
+        "model": "psauth.courseuser",
+        "fields": {
+            "first_name": "Barna",
+            "last_name": "B",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "role":1,
+            "last_login": "2014-02-17",
+            "org": null,
+            "gender": "F",
+            "phone": "9885489230",
+            "groups": [
+                [
+                    "SuperAdmin"
+                ]
+            ],
+            "user_permissions": [ ],
+            "password": "pbkdf2_sha256$12000$KK6gBp4B5jnk$F0iavkqzqojkaoBGSwlwSIKErSF1svV+iq3Cznaa4NA=",
+            "email": "barnab@gmail.com",
+            "date_joined": "2014-02-17"
+        }
+    }
 ]

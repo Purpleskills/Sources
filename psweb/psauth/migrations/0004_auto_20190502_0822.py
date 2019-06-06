@@ -34,6 +34,12 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=512)),
             ],
         ),
+        migrations.AddField(
+            model_name='courseuser',
+            name='role',
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='psauth.UserRole'),
+            preserve_default=False,
+        ),
         migrations.RemoveField(
             model_name='usergoals',
             name='user',
@@ -76,11 +82,5 @@ class Migration(migrations.Migration):
             model_name='courseuser',
             name='org',
             field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.PROTECT, to='psauth.Organization'),
-        ),
-        migrations.AddField(
-            model_name='courseuser',
-            name='role',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='psauth.UserRole'),
-            preserve_default=False,
         ),
     ]

@@ -1,10 +1,4 @@
 [
-    { "pk": 1, "model": "learn.CourseProvider", "fields": {"name": "Udemy", "status": 1, "logo": "/media/logo/udemy_logo.svg", "url": "https://www.udemy.com" }  },
-    { "pk": 2, "model": "learn.CourseProvider", "fields": {"name": "Lynda", "status": 1, "logo": "/media/logo/lynda-linkedin-logo.jpg", "url": "https://www.lynda.com"}  },
-    { "pk": 3, "model": "learn.CourseProvider", "fields": {"name": "PluralSight", "status": 1, "logo": "/media/logo/pluralsight_logo.png", "url": "https://www.pluralsight.com/courses"}  },
-    { "pk": 4, "model": "learn.CourseProvider", "fields": {"name": "Coursera", "status": 1, "logo": "/media/logo/coursera_logo.svg", "url": "https://www.coursera.org/learn"}  },
-
-
     {
         "pk": 1,
         "model": "psauth.company",
@@ -16,12 +10,79 @@
     },
     {
         "pk": 1,
+        "model": "psauth.userrole",
+        "fields": {
+            "title": "CEO",
+            "company": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "psauth.userrole",
+        "fields": {
+            "title": "HR Manager",
+            "company": 1
+        }
+    },
+
+    {
+        "pk": 3,
+        "model": "psauth.userrole",
+        "fields": {
+            "title": "General Manager",
+            "company": 1
+        }
+    },
+    {
+        "pk": 4,
+        "model": "psauth.userrole",
+        "fields": {
+            "title": "Group Manager",
+            "company": 1
+        }
+    },
+    {
+        "pk": 5,
+        "model": "psauth.userrole",
+        "fields": {
+            "title": "Developer",
+            "company": 1
+        }
+    },
+    {
+        "pk": 6,
+        "model": "psauth.userrole",
+        "fields": {
+            "title": "Data Scientist",
+            "company": 1
+        }
+    },
+
+    { "pk": 1, "model": "psauth.organization", "fields": { "name": "Company", "company": 1, "parent":null, "level": 0, "lft": 1, "rght": 20, "tree_id": 1, "owner": 2 } },
+    { "pk": 2, "model": "psauth.organization", "fields": { "name": "Products", "company": 1, "parent":1, "level": 1, "lft": 2, "rght": 9, "tree_id": 1, "owner": 2 } },
+    { "pk": 3, "model": "psauth.organization", "fields": { "name": "Services", "company": 1, "parent":1, "level": 1, "lft": 10, "rght": 15, "tree_id": 1, "owner": 2  } },
+    { "pk": 4, "model": "psauth.organization", "fields": { "name": "HR", "company": 1, "parent":1, "level": 1, "lft": 16, "rght": 19, "tree_id": 1, "owner": 2  } },
+    { "pk": 5, "model": "psauth.organization", "fields": { "name": "Product development", "company": 1, "parent":2 , "level": 2, "lft": 3, "rght": 4, "tree_id": 1, "owner": 2 } },
+    { "pk": 6, "model": "psauth.organization", "fields": { "name": "R&D", "company": 1, "parent":2, "level": 2, "lft": 5, "rght": 6, "tree_id": 1, "owner": 2  } },
+    { "pk": 7, "model": "psauth.organization", "fields": { "name": "Support", "company": 1, "parent":2, "level": 2, "lft": 7, "rght": 8, "tree_id": 1, "owner": 2  } },
+    { "pk": 8, "model": "psauth.organization", "fields": { "name": "International", "company": 1, "parent":3 , "level": 2, "lft": 11, "rght": 12, "tree_id": 1, "owner": 2 } },
+    { "pk": 9, "model": "psauth.organization", "fields": { "name": "Project management", "company": 1, "parent":3, "level": 2, "lft": 13, "rght": 14, "tree_id": 1, "owner": 2  } },
+    { "pk": 10, "model": "psauth.organization", "fields": { "name": "Payroll", "company": 1, "parent":4, "level": 2, "lft": 17, "rght": 18, "tree_id": 1, "owner": 2  } },
+
+
+    { "pk": 1, "model": "psauth.userrole", "fields": { "title": "Developer", "company": 1 } },
+    { "pk": 2, "model": "psauth.userrole", "fields": { "title": "Project manager", "company": 1 } },
+    { "pk": 3, "model": "psauth.userrole", "fields": { "title": "Ops", "company": 1 } },
+    { "pk": 4, "model": "psauth.userrole", "fields": { "title": "Dev Lead", "company": 1 } },
+    { "pk": 5, "model": "psauth.userrole", "fields": { "title": "HR manager", "company": 1 } },
+    {
+        "pk": 1,
         "model": "psauth.courseuser",
         "fields": {
             "first_name": "Amit",
             "last_name": "Kripalani",
             "email": "krips2@gmail.com",
-            "org": 1,
+            "org": 6,
             "role": 1,
             "is_active": true,
             "is_superuser": false,
@@ -39,69 +100,210 @@
         }
     },
     {
-        "pk": 3,
+        "pk": 2,
         "model": "psauth.courseuser",
         "fields": {
-            "first_name": "Captain",
-            "last_name": "Picard",
-            "email": "picard@federation.com",
-            "org": 4,
-            "role": 5,
+            "first_name": "Test-2",
+            "last_name": "B",
             "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "phone": "9886489230",
+            "is_staff": true,
+            "role":1,
+            "last_login": "2014-02-17",
+            "org": null,
+            "gender": "F",
+            "phone": "9885489230",
             "groups": [
                 [
-                    "Manager"
+                    "Employee"
                 ]
             ],
             "user_permissions": [ ],
-            "username": "picard",
-            "password": "pbkdf2_sha256$100000$vzcBsFzEvfAp$QjTG22c91JDC8vk9KsRorm5pZR0BwG5Pn/eqi8iX//Q=",
-            "date_joined": "2019-06-19"
+            "password": "pbkdf2_sha256$12000$KK6gBp4B5jnk$F0iavkqzqojkaoBGSwlwSIKErSF1svV+iq3Cznaa4NA=",
+            "email": "test-2@purpleskills.com",
+            "username": "test-2@purpleskills.com",
+            "date_joined": "2014-02-17"
         }
     },
+    {
+        "pk": 3,
+        "model": "psauth.courseuser",
+        "fields": {
+            "first_name": "Test-3",
+            "last_name": "B",
+            "is_active": true,
+            "is_staff": true,
+            "role":1,
+            "last_login": "2014-02-17",
+            "org": null,
+            "gender": "F",
+            "phone": "9885489230",
+            "groups": [
+                [
+                    "Employee"
+                ]
+            ],
+            "user_permissions": [ ],
+            "password": "pbkdf2_sha256$12000$KK6gBp4B5jnk$F0iavkqzqojkaoBGSwlwSIKErSF1svV+iq3Cznaa4NA=",
+            "email": "test-3@purpleskills.com",
+            "username": "test-3@purpleskills.com",
+            "date_joined": "2014-02-17"
+        }
+    },
+
     {
         "pk": 4,
         "model": "psauth.courseuser",
         "fields": {
-            "first_name": "Captain",
-            "last_name": "Spock",
-            "email": "spock@federation.com",
-            "org": 1,
-            "role": 2,
+            "first_name": "Test-4",
+            "last_name": "B",
+            "is_active": true,
+            "is_staff": true,
+            "role":1,
+            "last_login": "2014-02-17",
+            "org": null,
+            "gender": "F",
+            "phone": "9885489230",
+            "groups": [
+                [
+                    "Employee"
+                ]
+            ],
+            "user_permissions": [ ],
+            "password": "pbkdf2_sha256$12000$KK6gBp4B5jnk$F0iavkqzqojkaoBGSwlwSIKErSF1svV+iq3Cznaa4NA=",
+            "email": "test-4@purpleskills.com",
+            "username": "test-4@purpleskills.com",
+            "date_joined": "2014-02-17"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "psauth.courseuser",
+        "fields": {
+            "first_name": "Test-5",
+            "last_name": "B",
+            "is_active": true,
+            "is_staff": true,
+            "role":1,
+            "last_login": "2014-02-17",
+            "org": null,
+            "gender": "F",
+            "phone": "9885489230",
+            "groups": [
+                [
+                    "Employee"
+                ]
+            ],
+            "user_permissions": [ ],
+            "password": "pbkdf2_sha256$12000$KK6gBp4B5jnk$F0iavkqzqojkaoBGSwlwSIKErSF1svV+iq3Cznaa4NA=",
+            "email": "test-5@purpleskills.com",
+            "username": "test-5@purpleskills.com",
+            "date_joined": "2014-02-17"
+        }
+    },
+
+    {
+        "pk": 6,
+        "model": "psauth.courseuser",
+        "fields": {
+            "first_name": "Test-6",
+            "last_name": "B",
+            "is_active": true,
+            "is_staff": true,
+            "role":1,
+            "last_login": "2014-02-17",
+            "org": null,
+            "gender": "F",
+            "phone": "9885489230",
+            "groups": [
+                [
+                    "Employee"
+                ]
+            ],
+            "user_permissions": [ ],
+            "password": "pbkdf2_sha256$12000$KK6gBp4B5jnk$F0iavkqzqojkaoBGSwlwSIKErSF1svV+iq3Cznaa4NA=",
+            "email": "test-6@purpleskills.com",
+            "username": "test-6@purpleskills.com",
+            "date_joined": "2014-02-17"
+        }
+    },
+
+    { "pk": 1, "model": "learn.Objective", "fields": { "user": 1, "company": 1, "name": "Ramp up on Machine learning"} },
+    { "pk": 2, "model": "learn.Objective", "fields": { "user": 1, "company": 1, "name": "Sharpen Python developer skills"} },
+
+    { "pk": 1, "model": "learn.KeyResult", "fields": { "objective": 1, "difficulty": 1, "name": "Know the machine learning jargon"} },
+    { "pk": 2, "model": "learn.KeyResult", "fields": { "objective": 1, "difficulty": 1, "name": "Understand the most popular algorithms"} },
+    { "pk": 3, "model": "learn.KeyResult", "fields": { "objective": 2, "difficulty": 1, "name": "Understand Python lambda functions"} },
+    { "pk": 4, "model": "learn.KeyResult", "fields": { "objective": 2, "difficulty": 1, "name": "Improve understanding thread management"} },
+
+    {
+        "pk": 7,
+        "model": "psauth.courseuser",
+        "fields": {
+            "first_name": "User 7",
+            "last_name": "User7",
+            "email": "user7@purpleskills.com",
+            "org": 6,
+            "role": 1,
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
             "phone": "9886489230",
             "groups": [
                 [
-                    "Manager"
+                    "Employee"
                 ]
             ],
             "user_permissions": [ ],
-            "username": "spock",
+            "username": "user7",
             "password": "pbkdf2_sha256$100000$vzcBsFzEvfAp$QjTG22c91JDC8vk9KsRorm5pZR0BwG5Pn/eqi8iX//Q=",
-            "date_joined": "2018-06-19"
+            "date_joined": "2019-05-19"
         }
     },
-    { "pk": 1, "model": "psauth.organization", "fields": { "name": "Company", "company": 1, "parent":null, "level": 0, "lft": 1, "rght": 20, "tree_id": 1, "owner": 2 } },
-    { "pk": 2, "model": "psauth.organization", "fields": { "name": "Products", "company": 1, "parent":1, "level": 1, "lft": 2, "rght": 9, "tree_id": 1, "owner": 2 } },
-    { "pk": 3, "model": "psauth.organization", "fields": { "name": "Services", "company": 1, "parent":1, "level": 1, "lft": 10, "rght": 15, "tree_id": 1, "owner": 2  } },
-    { "pk": 4, "model": "psauth.organization", "fields": { "name": "HR", "company": 1, "parent":1, "level": 1, "lft": 16, "rght": 19, "tree_id": 1, "owner": 2  } },
-    { "pk": 5, "model": "psauth.organization", "fields": { "name": "Product development", "company": 1, "parent":2 , "level": 2, "lft": 3, "rght": 4, "tree_id": 1, "owner": 2 } },
-    { "pk": 6, "model": "psauth.organization", "fields": { "name": "R&D", "company": 1, "parent":2, "level": 2, "lft": 5, "rght": 6, "tree_id": 1, "owner": 2  } },
-    { "pk": 7, "model": "psauth.organization", "fields": { "name": "Support", "company": 1, "parent":2, "level": 2, "lft": 7, "rght": 8, "tree_id": 1, "owner": 2  } },
-    { "pk": 8, "model": "psauth.organization", "fields": { "name": "International", "company": 1, "parent":3 , "level": 2, "lft": 11, "rght": 12, "tree_id": 1, "owner": 2 } },
-    { "pk": 9, "model": "psauth.organization", "fields": { "name": "Project management", "company": 1, "parent":3, "level": 2, "lft": 13, "rght": 14, "tree_id": 1, "owner": 2  } },
-    { "pk": 10, "model": "psauth.organization", "fields": { "name": "Payroll", "company": 1, "parent":4, "level": 2, "lft": 17, "rght": 18, "tree_id": 1, "owner": 2  } },
+    { "pk": 3, "model": "learn.Objective", "fields": { "user": 7, "company": 1, "name": "Understand design patterns"} },
+    { "pk": 4, "model": "learn.Objective", "fields": { "user": 7, "company": 1, "name": "Sharpen Python developer skills"} },
+    { "pk": 5, "model": "learn.Objective", "fields": { "user": 7, "company": 1, "name": "Improve inter personal skills"} },
 
+    { "pk": 5, "model": "learn.KeyResult", "fields": { "objective": 3, "difficulty": 1, "name": "Familiar with all the design patterns"} },
+    { "pk": 6, "model": "learn.KeyResult", "fields": { "objective": 4, "difficulty": 3, "name": "Understand advanced python concepts"} },
+    { "pk": 7, "model": "learn.KeyResult", "fields": { "objective": 4, "difficulty": 3, "name": "Deeper understanding of python code maintenance"} },
+    { "pk": 8, "model": "learn.KeyResult", "fields": { "objective": 4, "difficulty": 3, "name": "understand thread management"} },
+    { "pk": 9, "model": "learn.KeyResult", "fields": { "objective": 5, "difficulty": 2, "name": "Learn to be pro-active in meetings"} },
+    { "pk": 10, "model": "learn.KeyResult", "fields": { "objective": 5, "difficulty": 2, "name": "Be able to listen to others"} },
+    { "pk": 11, "model": "learn.KeyResult", "fields": { "objective": 5, "difficulty": 2, "name": "Be more fluent in speaking"} },
 
-    { "pk": 1, "model": "psauth.userrole", "fields": { "title": "Developer", "company": 1 } },
-    { "pk": 2, "model": "psauth.userrole", "fields": { "title": "Project manager", "company": 1 } },
-    { "pk": 3, "model": "psauth.userrole", "fields": { "title": "Ops", "company": 1 } },
-    { "pk": 4, "model": "psauth.userrole", "fields": { "title": "Dev Lead", "company": 1 } },
-    { "pk": 5, "model": "psauth.userrole", "fields": { "title": "HR manager", "company": 1 } }
+    {
+        "pk": 8,
+        "model": "psauth.courseuser",
+        "fields": {
+            "first_name": "User 8",
+            "last_name": "User8",
+            "email": "user7@purpleskills.com",
+            "org": 6,
+            "role": 1,
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "phone": "9886489230",
+            "groups": [
+                [
+                    "Employee"
+                ]
+            ],
+            "user_permissions": [ ],
+            "username": "user8",
+            "password": "pbkdf2_sha256$100000$vzcBsFzEvfAp$QjTG22c91JDC8vk9KsRorm5pZR0BwG5Pn/eqi8iX//Q=",
+            "date_joined": "2019-05-19"
+        }
+    },
+    { "pk": 6, "model": "learn.Objective", "fields": { "user": 8, "company": 1, "name": "Understand design patterns"} },
+    { "pk": 7, "model": "learn.Objective", "fields": { "user": 8, "company": 1, "name": "Sharpen Python developer skills"} },
+    { "pk": 8, "model": "learn.Objective", "fields": { "user": 8, "company": 1, "name": "Improve inter personal skills"} },
 
+    { "pk": 12, "model": "learn.KeyResult", "fields": { "objective": 6, "difficulty": 1, "name": "Familiar with all the design patterns"} },
+    { "pk": 13, "model": "learn.KeyResult", "fields": { "objective": 7, "difficulty": 3, "name": "Understand advanced python concepts"} },
+    { "pk": 14, "model": "learn.KeyResult", "fields": { "objective": 7, "difficulty": 3, "name": "Deeper understanding of python code maintenance"} },
+    { "pk": 15, "model": "learn.KeyResult", "fields": { "objective": 7, "difficulty": 3, "name": "understand thread management"} },
+    { "pk": 16, "model": "learn.KeyResult", "fields": { "objective": 8, "difficulty": 2, "name": "Learn to be pro-active in meetings"} },
+    { "pk": 17, "model": "learn.KeyResult", "fields": { "objective": 8, "difficulty": 2, "name": "Be able to listen to others"} },
+    { "pk": 18, "model": "learn.KeyResult", "fields": { "objective": 8, "difficulty": 2, "name": "Be more fluent in speaking"} }
 ]

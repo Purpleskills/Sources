@@ -108,6 +108,7 @@ class Objective(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=60)
     tags = models.ManyToManyField(CourseTag)
+    timeline = models.PositiveSmallIntegerField(default=12)
 
 class KeyResult (models.Model):
     def GetDifficultyName(self):
@@ -119,4 +120,4 @@ class KeyResult (models.Model):
     name = models.CharField(max_length=128)
     objective = models.ForeignKey(Objective, on_delete=models.PROTECT)
     difficulty = models.SmallIntegerField(choices=[(tag, tag.value) for tag in DifficultyChoice])
-    progressinpercent = models.DecimalField(decimal_places=2, max_digits=6, default=0)
+    progressinpercent = models.PositiveSmallIntegerField(default=0)
